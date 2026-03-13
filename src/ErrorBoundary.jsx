@@ -3,22 +3,23 @@
  */
 
 
-import { Component, useContext } from 'react'
-import { useLocation } from "react-router-dom";
+import { Component } from 'react'
 import { getContextValues } from './state';
 
 
 export function ErrorBoundary(props) {
-  const location = useLocation()
-  const { hideBadLinks } = getContextValues("ModulesContext")
   const { children } = props
+  const {
+    hideBadLink,
+    history
+  } = getContextValues("ModulesContext")
+  const { label, route } = (history[0] || {}) // not undefined?
 
-  const link = location.pathname + location.hash
-  props = { ...props, link, hideBadLinks }
+  props = { ...props, label, hideBadLink }
 
   return (
     <ErrorBoundaryClass
-      key={link}
+      key={route}
       fallback={ error => (
         <ErrorFallback error={error} {...props} />
       )}
@@ -29,18 +30,15 @@ export function ErrorBoundary(props) {
 }
 
 
-
 class ErrorBoundaryClass extends Component {
   constructor(props) {
     super(props)
     this.state = { error: null }
   }
 
-
   static getDerivedStateFromError(error) {
     return { error }
   }
-
 
   render() {
     const { error } = this.state
@@ -58,28 +56,32 @@ class ErrorBoundaryClass extends Component {
 }
 
 
-
+/**
+ * Distinguish cases depending on error message
+ * @param {object} props (see below)
+ * @returns 
+ */
 const ErrorFallback = props => {
   const {
-    label,
-    error,
-    hideBadLinks,
-    link
+    error,              // from ErrorBoundaryClass
+    resetBoundaryError,
+    hideBadLink,        // read from ModulesContext
+    label               // read from ModulesContext.history
   } = props
+
 
   let message
   if (error.message === "loader is not a function") {
-    message = `Unknown module "${label}". The link for ${label} has been removed.`
-    hideBadLinks(link)
+    return MissingModule(label, hideBadLink)
 
+  } else if (error?.message?.includes(
+      "dynamically imported module"
+  )) {
+    return NetworkError(label, resetBoundaryError, hideBadLink)
 
-  } else if (error?.message?.includes("dynamically imported module")) {
-    message = `Failed to load module. The link for ${label} has been removed.`
-    hideBadLinks(link)
-
-  } else if (error?.message?.includes("is undefined") ||
-             error?.message?.includes("Cannot destructure property")) {
-    message = `Missing context for module: ${label}`
+  } else if (error?.message?.includes("is undefined")
+          || error?.message?.includes("Cannot destructure")) {
+    return MissingContext(label)
 
   } else {
     return <CrashError {...props}
@@ -90,12 +92,59 @@ const ErrorFallback = props => {
 }
 
 
+const MissingModule = (label, hideBadLink)=> {
+  const message = `Unknown module "${label}".`
+
+  return (
+    <>
+      <h2>{message}</h2>
+      <button
+        onClick={hideBadLink}
+      >
+        Delete Link to {label}
+      </button>
+    </>
+  )
+}
+
+
+const NetworkError = (label, hideBadLink, resetBoundaryError) => {
+  const message = `Failed to load module. The link for ${label} has been removed.`
+  
+  return (
+    <>
+      <h2>{message}</h2>
+      <button
+        onClick={resetBoundaryError}
+      >
+        Try Again
+      </button>
+      <button
+        onClick={hideBadLink}
+      >
+        Delete Link to {label}
+      </button>
+    </>
+  )
+}
+
+
+const MissingContext = (label) => {
+  // TODO: Decide how to handle a missing context
+  const message = `Missing context for module: ${label}`
+  return (
+    <>
+      <h2>{message}</h2>
+    </>
+  )
+}
+
 
 const CrashError = ({
   label, 
   boundaryError,
   resetBoundaryError,
-  hideBadLinks,
+  hideBadLink,
   link
 }) => {
   const times = ([
@@ -121,7 +170,7 @@ const CrashError = ({
       <>
         <h2>{message}</h2>
         <button
-          onClick={() => hideBadLinks(link)}
+          onClick={() => hideBadLink(link)}
         >
           Delete Link
         </button>

@@ -9,7 +9,6 @@ import { Nav, Routing } from './routes'
 import { ErrorBoundary } from './ErrorBoundary'
 
 
-
 export const App = () => {
   return (
     <Router>

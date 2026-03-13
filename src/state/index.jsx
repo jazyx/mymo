@@ -9,11 +9,7 @@ import {
   useCallback,
   useContext,
 } from 'react'
-import {
-  ModulesProvider,
-  ModulesContext,
-  label as ModulesLabel
-} from "./ModulesContext"
+import Modules from "./ModulesContext"
 
 
 // Asynchronous import for context modules
@@ -45,10 +41,7 @@ const DynamicProviderContext = createContext(null)
 // Root Provider to wrap around the game components
 export const Provider = ({ children }) => {
   const [ providers, setProviders ] = useState(() => [
-    { label: ModulesLabel,
-      Context: ModulesContext,
-      Provider: ModulesProvider
-    }
+    Modules
   ])
   
 

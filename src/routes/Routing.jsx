@@ -15,7 +15,10 @@ import { Throbber } from '../component/Throbber'
 
 
 export const Routing = (props) => {
-  const { modulesAvailable } = getContextValues("ModulesContext")
+  const {
+    modulesAvailable,
+    setRouteAndLabel
+  } = getContextValues("ModulesContext")
 
   const [ moduleLabel, setModuleLabel ] = useState("")
   const [ boundaryError, setBoundaryError ] = useState(0)
@@ -34,7 +37,7 @@ export const Routing = (props) => {
     const { route } = moduleData // path, label
 
     const props = {
-      setModuleLabel,
+      setRouteAndLabel,
       boundaryError,
       resetBoundaryError
     }

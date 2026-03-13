@@ -36,12 +36,13 @@ function getLazyModule(path) {
 
 
 export const RouteWrapper = (props) => {
-  const { path } = props
+  const { path, setRouteAndLabel } = props // + label, route
   const [ LazyModule, setLazyModule ] = useState(
     () => () => <Throbber />
   )
   
   const loadModule = () => {
+    setRouteAndLabel(props)
     const Module = getLazyModule(path)
 
     if (Module) {

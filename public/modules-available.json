@@ -10,6 +10,11 @@
     "path": "./Module1.jsx"
   },
   {
+    "label": "Module Two",
+    "route": "/module2",
+    "path": "./Module2.jsx"
+  },
+  {
     "label": "Missing Module",
     "route": "/missing",
     "path": "./MissingModule.jsx"
