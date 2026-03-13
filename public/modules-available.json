@@ -15,6 +15,11 @@
     "path": "./modules/Counter.jsx"
   },
   {
+    "label": "Buggy Module",
+    "route": "/buggy",
+    "path": "./modules/BuggyModule.jsx"
+  },
+  {
     "label": "Missing Module",
     "route": "/missing",
     "path": "./modules/MissingModule.jsx"

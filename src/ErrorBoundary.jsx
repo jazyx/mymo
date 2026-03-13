@@ -13,7 +13,9 @@ export function ErrorBoundary(props) {
   const { children } = props
   const {
     hideBadLink,
-    history
+    history,
+    boundaryError,
+    resetBoundaryError
   } = getContextValues("ModulesContext")
 
   // Use location as key for ErrorBoundaryClass, so that navigating
@@ -23,12 +25,18 @@ export function ErrorBoundary(props) {
   // Get label of current module for useful error messages
   const { label } = (history[0] || {}) // not undefined?
 
-  props = { ...props, label, hideBadLink }
+  props = {
+    ...props,
+    label,
+    hideBadLink,
+    boundaryError,
+    resetBoundaryError
+  }
   delete props.children // not needed by ErrorFallback
 
   return (
     <ErrorBoundaryClass
-      key={path}
+      key={boundaryError || path}
       fallback={ error => (
         <ErrorFallback error={error} {...props} />
       )}
@@ -45,9 +53,16 @@ class ErrorBoundaryClass extends Component {
     this.state = { error: null }
   }
 
+
   static getDerivedStateFromError(error) {
     return { error }
   }
+
+
+  componentDidCatch(error, info) {
+    // console.error("Error caught in boundary:", error, info);
+  }
+
 
   render() {
     const { error } = this.state
@@ -153,8 +168,7 @@ const CrashError = ({
   label, 
   boundaryError,
   resetBoundaryError,
-  hideBadLink,
-  link
+  hideBadLink
 }) => {
   const times = ([
     " ", // Use a space to be truthy. Use trimEnd() to remove it.
@@ -163,7 +177,7 @@ const CrashError = ({
   ][boundaryError]) || " too many times"
   const message = `Module "${label}" crashed${times.trimEnd()}.`
 
-  if (boundaryError < 3) {
+  if (boundaryError < 1) {
     return (
       <>
         <h2>{message}</h2>
@@ -179,7 +193,7 @@ const CrashError = ({
       <>
         <h2>{message}</h2>
         <button
-          onClick={() => hideBadLink(link)}
+          onClick={hideBadLink}
         >
           Delete Link
         </button>

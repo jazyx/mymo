@@ -3,14 +3,14 @@
  */
 
 
-import { useState, useContext } from 'react'
 import { 
   Routes,
-  Route
+  Route,
+  Navigate
 } from 'react-router-dom'
 import { getContextValues } from '../state'
 import { RouteWrapper } from './RouteWrapper'
-import { Throbber } from '../component/Throbber'
+import { NotAvailable } from '../component/NotAvailable'
 
 
 
@@ -19,26 +19,10 @@ export const Routing = (props) => {
     modulesAvailable,
     setRouteAndLabel
   } = getContextValues("ModulesContext")
-  const [ boundaryError, setBoundaryError ] = useState(0)
-
-
-  const resetBoundaryError = zero => {
-    if (zero === 0) {
-      return setBoundaryError(0)
-    }
-
-    setBoundaryError(current => current + 1)
-  }
 
 
   let routes = modulesAvailable.map( moduleData => {
     const { route } = moduleData // path, label
-
-    const props = {
-      setRouteAndLabel,
-      boundaryError,
-      resetBoundaryError
-    }
 
     return (
       <Route
@@ -47,22 +31,45 @@ export const Routing = (props) => {
         element={
           <RouteWrapper
             {...moduleData}
-            {...props}
+            setRouteAndLabel={setRouteAndLabel}
           />
         }
       />
     )
   })
 
-  if (!routes.length) {
-    routes = (
-      <Route
-        key="__loading__"
-        path="/"
-        element={<Throbber />}
-      />
-    )
-  }
+  // <<< HACK
+  // The NotAvailable component will be shown momentarily if the
+  // user starts a visit with a dynamic route. The dynamic route
+  // should be shown as soon as it becomes available.
+  //
+  // NotAvailable will also be shown if
+  // * The user previously visited a broken link,
+  // * Navigated somewhere else
+  // * Visited the broken link again
+  // * Chose to delete the broken link
+  // * Used the browser's Back button to return to the previously
+  //   visited route.
+  // 
+  // In this case, NotAvailable will show a message that the
+  // broken link is not currently available, and a recommendation
+  // to choose a different activity.
+  //
+  // This is not an ideal solution, but it is impossible to remove
+  // an item from window.history, and it's better to show a message
+  // than an inexplicably empty page.
+
+  routes.push(
+    <Route
+      key="home"
+      path="*"
+      element={
+        <NotAvailable/>
+      }
+    />
+  )
+  // HACK >>>
+
 
   return <Routes>{routes}</Routes>
 }

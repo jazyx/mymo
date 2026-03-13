@@ -25,11 +25,17 @@
  *  + hideBadLink() can be called by one of the Error Fallback
  *    components in ErrorBoundary, to remove a Link which is
  *    provoking errors
+ *  + boundaryError is initially 0, but can be increment by calls
+ *    to...
+ *  + resetBoundaryError(). This changes the key for ErrorBoundary
+ *    and so allows a module that provoked an error to be
+ *    restarted. `boundaryError` is reset to 0 when the location
+ *    changes, or when 
  */
 
 
-import { createContext, useState, useEffect} from 'react'
-import { useNavigate } from 'react-router-dom'
+import { createContext, useState, useEffect, useRef} from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 const MODULES_API = "./modules-available.json"
 
 
@@ -38,9 +44,25 @@ export const ModulesContext = createContext()
 
 export const ModulesProvider = ({ children }) => {
   const navigate = useNavigate()
+  const location = useLocation()
   const [ modulesAvailable, setModulesAvailable ] = useState([])
   const [ badLinks, setBadLinks ] = useState([])
   const [ history, setHistory ] = useState([])
+  const [ boundaryError, setBoundaryError ] = useState(0)
+  
+
+  const resetBoundaryError = zero => {
+    if (zero === 0) {
+      return setBoundaryError(0)
+    }
+
+    setBoundaryError(current => current + 1)
+  }
+
+
+  const clearErrorBoundary = () => {
+    resetBoundaryError(0)
+  }
 
 
   /**
@@ -50,16 +72,20 @@ export const ModulesProvider = ({ children }) => {
    * after the state variables have been updated.
    */
   const hideBadLink = () => {
-    const link = history[0]?.route
+    const active = history[0]
 
-    if (badLinks.indexOf(link) < 0) {
+    const index = badLinks.findIndex( badLink => (
+      badLink.route === active.route
+    ))
+
+    if (index < 0) {
       // Remove bad route from all of history
       setHistory(current => (
-        current.filter( data  => data.route !== link )
+        current.filter( data  => data.route !== active.route )
       ))
-      setBadLinks(current => [ ...current, link ])
+      setBadLinks(current => [ ...current, active ])
       setModulesAvailable(current => current.filter( module => (
-        module.route !== link
+        module.route !== active.route
       )))
     }
   }
@@ -83,8 +109,19 @@ export const ModulesProvider = ({ children }) => {
   const goBackToSafeRoute = () => {
     if (!badLinks.length) { return }
 
+    resetBoundaryError(0) // to ensure last good path is unblocked
     const lastGoodRoute = history[0]?.route || "/"
     navigate(lastGoodRoute, { replace: true })
+
+    // NOTE: { replace: true } will only affect the most recent
+    // visit to the route which caused the error.
+    // If this route was previously visited without being deleted,
+    // window.history will still contain a record for it, and
+    // allow the user to return to that route using the Back and
+    // Forward arrows. However, the route will no longer exist, so
+    // no module will be shown.
+    // Refreshing the page with the route active will reload the
+    // app with the module for that route.
   }
 
 
@@ -97,6 +134,7 @@ export const ModulesProvider = ({ children }) => {
 
   useEffect(fetchModulesAvailable, [])
   useEffect(goBackToSafeRoute, [badLinks.length])
+  useEffect(clearErrorBoundary, [location])
 
 
   return (
@@ -105,7 +143,10 @@ export const ModulesProvider = ({ children }) => {
         modulesAvailable,
         setRouteAndLabel,
         history,
-        hideBadLink
+        boundaryError,
+        resetBoundaryError,
+        hideBadLink,
+        badLinks
       }}
     >
       {children}
