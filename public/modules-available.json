@@ -1,0 +1,17 @@
+[
+  {
+    "label": "Home",
+    "route": "/",
+    "path": "./Home.jsx"
+  },
+  {
+    "label": "Module 1",
+    "route": "/module1",
+    "path": "./Module1.jsx"
+  },
+  {
+    "label": "Missing Module",
+    "route": "/missing",
+    "path": "./MissingModule.jsx"
+  }
+]
