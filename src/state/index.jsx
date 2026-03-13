@@ -10,6 +10,7 @@ import {
   useContext,
 } from 'react'
 import Modules from "./ModulesContext"
+import moduleLoaders from '../moduleLoaders'
 
 
 // Asynchronous import for context modules
@@ -17,15 +18,12 @@ const importProvidersAndContexts = async (paths) => {
   const modules = []
 
   for (const path of paths) {
-    const label = path.replace(/^.*\/|Context.jsx?$/gi, '')
-    const contextLabel = `${label}Context`
-    const providerLabel = `${label}Provider`
-
-    const module = await import(path)
-    const Context = module[contextLabel]
-    const Provider = module[providerLabel]
-
-    modules.push({ label, Context, Provider })
+    const loader = moduleLoaders[path]
+    if (!loader) {
+      throw new Error(`Context not found at ${path}`)
+    }
+    const module = await loader()
+    modules.push(module.default)
   }
 
   return modules
@@ -45,7 +43,6 @@ export const Provider = ({ children }) => {
   ])
   
 
-
  /**
    * Allow consumer modules to request that the Contexts they
    * require are available. The necessary Providers will be
@@ -56,25 +53,19 @@ export const Provider = ({ children }) => {
       paths = [ paths ]
     }
 
-    // Remove any obviously invalid paths, and ensure that they
-    // all use the 'js' extension
-    paths = paths
-      .filter( path => typeof path === "string" )
-      .map( path => path.replace(/x$/, ""))
+    // Remove any obviously invalid paths
+    paths = paths.filter( path => typeof path === "string" )
 
     const imported = await importProvidersAndContexts(paths)
-    // { label, Context, Provider }
+    // [{ label, Context, Provider }, ...]
 
     // Remove any providers which are already in the tree
     const newProviders = imported.filter(
-      ({ label: labelToInsert }) => {
-        const exists = providers.find(
-          ({ label }) => (
-            labelToInsert === label
-          )
+      ({ label: labelToInsert }) => (
+        !providers.find(
+          ({ label }) => labelToInsert === label
         )
-        return !exists
-      }
+      )
     )
 
     // Add the newProviders at the end of the providers array
@@ -154,4 +145,11 @@ export const getContextValues = contextName => {
   }
 
   return useContext(context)
+}
+
+
+export const useInsertProviders = () => {
+  const { insertProviders } = useDynamicContexts()
+
+  return insertProviders
 }

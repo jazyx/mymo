@@ -19,8 +19,6 @@ export const Routing = (props) => {
     modulesAvailable,
     setRouteAndLabel
   } = getContextValues("ModulesContext")
-
-  const [ moduleLabel, setModuleLabel ] = useState("")
   const [ boundaryError, setBoundaryError ] = useState(0)
 
 

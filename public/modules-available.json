@@ -2,21 +2,21 @@
   {
     "label": "Home",
     "route": "/",
-    "path": "./Home.jsx"
+    "path": "./modules/Home.jsx"
   },
   {
     "label": "Module 1",
     "route": "/module1",
-    "path": "./Module1.jsx"
+    "path": "./modules/Module1.jsx"
   },
   {
-    "label": "Module Two",
-    "route": "/module2",
-    "path": "./Module2.jsx"
+    "label": "Counter",
+    "route": "/counter",
+    "path": "./modules/Counter.jsx"
   },
   {
     "label": "Missing Module",
     "route": "/missing",
-    "path": "./MissingModule.jsx"
+    "path": "./modules/MissingModule.jsx"
   }
 ]

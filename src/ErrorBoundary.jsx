@@ -4,22 +4,31 @@
 
 
 import { Component } from 'react'
+import { useLocation } from 'react-router-dom';
 import { getContextValues } from './state';
 
 
 export function ErrorBoundary(props) {
+  const location = useLocation()
   const { children } = props
   const {
     hideBadLink,
     history
   } = getContextValues("ModulesContext")
-  const { label, route } = (history[0] || {}) // not undefined?
+
+  // Use location as key for ErrorBoundaryClass, so that navigating
+  // to another route will clear the error
+  const path = location.pathname + location.hash
+
+  // Get label of current module for useful error messages
+  const { label } = (history[0] || {}) // not undefined?
 
   props = { ...props, label, hideBadLink }
+  delete props.children // not needed by ErrorFallback
 
   return (
     <ErrorBoundaryClass
-      key={route}
+      key={path}
       fallback={ error => (
         <ErrorFallback error={error} {...props} />
       )}
@@ -69,9 +78,7 @@ const ErrorFallback = props => {
     label               // read from ModulesContext.history
   } = props
 
-
-  let message
-  if (error.message === "loader is not a function") {
+  if (error.message.startsWith("loader missing for")) {
     return MissingModule(label, hideBadLink)
 
   } else if (error?.message?.includes(
@@ -80,7 +87,9 @@ const ErrorFallback = props => {
     return NetworkError(label, resetBoundaryError, hideBadLink)
 
   } else if (error?.message?.includes("is undefined")
-          || error?.message?.includes("Cannot destructure")) {
+          || error?.message?.includes("is not a function")
+          || error?.message?.includes("Cannot destructure")
+          || error?.message?.includes("Context not found")) {
     return MissingContext(label)
 
   } else {

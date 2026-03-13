@@ -4,7 +4,7 @@
 
 
 import { useState, useEffect, lazy, Suspense } from 'react'
-import moduleLoaders from '../modules/'
+import moduleLoaders from '../moduleLoaders'
 import { throbber, Throbber } from '../component/Throbber'
 
 
@@ -17,6 +17,12 @@ function getLazyModule(path) {
 
   if (!Module) {
     const loader = moduleLoaders[path] // () => import("...")
+
+    if (!loader) {
+      // throw error with explicit message for ErrorBoundary
+      throw new Error(`loader missing for ${path}`)
+    }
+
     const importer = 
       loader()
       .catch(error => {
@@ -26,7 +32,7 @@ function getLazyModule(path) {
         throw error
       })
 
-    Module = lazy(() => importer) // will throw if can't be loaded
+    Module = lazy(() => importer)
 
     lazyCache.set(path, Module)
   }
