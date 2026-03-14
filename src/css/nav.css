@@ -1,0 +1,73 @@
+nav {
+  --width: min(36vmin, 300px);
+  --closed: calc(0px - var(--width));
+  --icon-size: calc(var(--width) / 3);
+  --icon-left: calc(var(--width) - var(--icon-size));
+  --font-size: calc(var(--width) / 10);
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--width);
+  height: 100vh;
+  font-size: var(--font-size);
+  background-color: #2229;
+  border-right: 1px solid #666;
+  box-shadow: 10px 0 10px #000;
+  transition: left .3s linear;
+
+  & svg {
+    position: relative;
+    left: var(--icon-left);
+    width: var(--icon-size);
+    height: var(--icon-size);
+    fill: var(--light);
+    opacity: 0.5;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  &.closed {
+    left: var(--closed);
+    background-color: #6669;
+
+    & svg {
+      left: var(--width);
+      transition-property: left;
+      transition-delay: 0.3s;
+    }
+  }
+
+  & ul {
+    padding: 0;
+    list-style-type: none;
+  }
+
+  & li {
+    border: 1px outset #888;
+    border-radius: 0.5em;
+    margin: 0.5em;
+    background-color: var(--dark);
+
+    &:active:hover,
+    &.selected {
+      border-style: inset;
+      background-color: #000;
+      color: #fff;
+    }
+  }
+
+  & a {
+    display: inline-block;
+    color: inherit;
+    width: 100%;
+    text-align: center;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+}

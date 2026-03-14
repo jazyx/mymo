@@ -30,11 +30,11 @@
  *  + resetBoundaryError(). This changes the key for ErrorBoundary
  *    and so allows a module that provoked an error to be
  *    restarted. `boundaryError` is reset to 0 when the location
- *    changes, or when 
+ *    changes, or when a broken route is removed.
  */
 
 
-import { createContext, useState, useEffect, useRef} from 'react'
+import { createContext, useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 const MODULES_API = "./modules-available.json"
 

@@ -8,6 +8,8 @@
 
 import { useEffect } from 'react'
 import { getContextValues, useInsertProviders } from '../state'
+// Stylesheets
+import "../css/counter.css"
 
 
 // HARD-CODED link to the Context(s) required by this component.
@@ -22,6 +24,7 @@ export default () => {
   // CounterContext will only become accessible after useEffect
   // has run after the component is mounted.
   const { score, setScore } = getContextValues("CounterContext")
+  const { applyStylesheets } = getContextValues("ModulesContext")
 
 
   const loadContexts = () => {
@@ -34,6 +37,7 @@ export default () => {
 
   return (
     <button
+      id="counter"
       onClick={() => setScore(current => current + 1)}
     >
       Click to increment: {score}
