@@ -41,6 +41,8 @@ export const Provider = ({ children }) => {
   const [ providers, setProviders ] = useState(() => [
     Modules
   ])
+  const [ error, setError ] = useState(null)
+  
   
 
  /**
@@ -56,21 +58,28 @@ export const Provider = ({ children }) => {
     // Remove any obviously invalid paths
     paths = paths.filter( path => typeof path === "string" )
 
-    const imported = await importProvidersAndContexts(paths)
-    // [{ label, Context, Provider }, ...]
+    try {
+      const imported = await importProvidersAndContexts(paths)
+      // [{ label, Context, Provider }, ...]
 
-    // Remove any providers which are already in the tree
-    const newProviders = imported.filter(
-      ({ label: labelToInsert }) => (
-        !providers.find(
-          ({ label }) => labelToInsert === label
+      // Remove any providers which are already in the tree
+      const newProviders = imported.filter(
+        ({ label: labelToInsert }) => (
+          !providers.find(
+            ({ label }) => labelToInsert === label
+          )
         )
       )
-    )
 
-    // Add the newProviders at the end of the providers array
-    if (newProviders.length) {
-      setProviders( current => [ ...current, ...newProviders ])
+      // Add the newProviders at the end of the providers array
+      if (newProviders.length) {
+        setProviders( current => [ ...current, ...newProviders ])
+      }
+
+      return 0
+
+    } catch (error) {
+      return error.message
     }
   }, [providers])
 

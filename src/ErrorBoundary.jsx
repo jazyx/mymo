@@ -83,7 +83,7 @@ class ErrorBoundaryClass extends Component {
 /**
  * Distinguish cases depending on error message
  * @param {object} props (see below)
- * @returns 
+ * @returns
  */
 const ErrorFallback = props => {
   const {
@@ -96,23 +96,23 @@ const ErrorFallback = props => {
   if (error.message.startsWith("loader missing for")) {
     return MissingModule(label, hideBadLink)
 
-  } else if (error?.message?.includes(
-      "dynamically imported module"
-  )) {
+  } else if (
+      error?.message?.includes( // Chrome, Safari, Edge
+        "Failed to fetch dynamically imported module"
+      )
+    || error?.message?.includes( // Firefox
+        "NetworkError when attempting to fetch resource"
+      )
+    ) {
     return NetworkError(label, resetBoundaryError, hideBadLink)
 
-  } else if (error?.message?.includes("is undefined")
-          || error?.message?.includes("is not a function")
-          || error?.message?.includes("Cannot destructure")
-          || error?.message?.includes("Context not found")) {
-    return MissingContext(label)
+  } else if (error?.message?.includes("Context not found")) {
+    return MissingContext(label, error.message, hideBadLink)
 
   } else {
     return <CrashError {...props}
     />
   }
-
-  return <h2>{message}</h2>
 }
 
 
@@ -132,9 +132,9 @@ const MissingModule = (label, hideBadLink)=> {
 }
 
 
-const NetworkError = (label, hideBadLink, resetBoundaryError) => {
-  const message = `Failed to load module. The link for ${label} has been removed.`
-  
+const NetworkError = (label, resetBoundaryError, hideBadLink ) => {
+  const message = `Failed to load module ${label}.`
+
   return (
     <>
       <h2>{message}</h2>
@@ -153,19 +153,25 @@ const NetworkError = (label, hideBadLink, resetBoundaryError) => {
 }
 
 
-const MissingContext = (label) => {
+const MissingContext = (label, error, hideBadLink) => {
   // TODO: Decide how to handle a missing context
   const message = `Missing context for module: ${label}`
   return (
     <>
       <h2>{message}</h2>
+      <p>{error}</p>
+      <button
+        onClick={hideBadLink}
+      >
+        Delete Link
+      </button>
     </>
   )
 }
 
 
 const CrashError = ({
-  label, 
+  label,
   boundaryError,
   resetBoundaryError,
   hideBadLink

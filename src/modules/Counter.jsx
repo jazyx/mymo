@@ -6,9 +6,8 @@
  */
 
 
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { getContextValues, useInsertProviders } from '../state'
-// Stylesheets
 import "../css/counter.css"
 
 
@@ -23,16 +22,28 @@ export default () => {
   const insertProviders = useInsertProviders()
   // CounterContext will only become accessible after useEffect
   // has run after the component is mounted.
+  const [ error, setError ] = useState(0)
   const { score, setScore } = getContextValues("CounterContext")
-  const { applyStylesheets } = getContextValues("ModulesContext")
 
 
   const loadContexts = () => {
-    insertProviders(CONTEXTS)
+    const insertContexts = async () => {
+      // React can't intercept an error that occurs in an async
+      // function, so we have to catch it here and throw it during
+      // the render process
+      const error = await insertProviders(CONTEXTS)
+      setError(error)
+    }
+    insertContexts()
   }
 
 
   useEffect(loadContexts, [])
+
+
+  if (error) {
+    throw new Error(error)
+  }
 
 
   return (

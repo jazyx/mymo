@@ -11,6 +11,7 @@ nav {
   width: var(--width);
   height: 100vh;
   font-size: var(--font-size);
+  text-align: left;
   background-color: #2229;
   border-right: 1px solid #666;
   box-shadow: 10px 0 10px #000;
