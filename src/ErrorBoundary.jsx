@@ -38,7 +38,7 @@ export function ErrorBoundary(props) {
     <ErrorBoundaryClass
       key={boundaryError || path}
       fallback={ error => (
-        <ErrorFallback error={error} {...props} />
+        <ErrorFallback error={error.message} {...props} />
       )}
     >
       {children}
@@ -93,21 +93,24 @@ const ErrorFallback = props => {
     label               // read from ModulesContext.history
   } = props
 
-  if (error.message.startsWith("loader missing for")) {
+  if (error.startsWith("loader missing for")) {
     return MissingModule(label, hideBadLink)
 
   } else if (
-      error?.message?.includes( // Chrome, Safari, Edge
+      error.includes( // Chrome, Safari, Edge
         "Failed to fetch dynamically imported module"
       )
-    || error?.message?.includes( // Firefox
+    || error.includes( // Firefox
         "NetworkError when attempting to fetch resource"
       )
     ) {
     return NetworkError(label, resetBoundaryError, hideBadLink)
 
-  } else if (error?.message?.includes("Context not found")) {
-    return MissingContext(label, error.message, hideBadLink)
+  } else if ( error.startsWith("JSON.parse()")) {
+    return JSONError(label, error, hideBadLink)
+
+  } else if (error.includes("Context not found")) {
+    return MissingContext(label, error, hideBadLink)
 
   } else {
     return <CrashError {...props}
@@ -154,12 +157,26 @@ const NetworkError = (label, resetBoundaryError, hideBadLink ) => {
 
 
 const MissingContext = (label, error, hideBadLink) => {
-  // TODO: Decide how to handle a missing context
   const message = `Missing context for module: ${label}`
   return (
     <>
       <h2>{message}</h2>
       <p>{error}</p>
+      <button
+        onClick={hideBadLink}
+      >
+        Delete Link
+      </button>
+    </>
+  )
+}
+
+
+const JSONError = (label, error, hideBadLink) => {
+  const message = `${error} for ${label}`
+  return (
+    <>
+      <h2>{message}</h2>
       <button
         onClick={hideBadLink}
       >

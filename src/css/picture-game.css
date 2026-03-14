@@ -1,0 +1,38 @@
+
+/* Rules specific to the picture-game module */
+.picture-game {
+  /* opacity values */
+  --dim: 0.325;
+  --mid: 0.75;
+
+  background-color: #fff6ee;
+
+  & > div:has(.right) {
+    pointer-events: none;
+    cursor: default;
+
+    & img:not(.right) {
+      opacity: var(--dim);
+    }
+  }
+
+ img {
+    width: 50%;
+    vertical-align: middle;
+    opacity: var(--mid);
+    cursor: pointer;
+    box-sizing: border-box;
+
+    &.right {
+      opacity: 1;
+    }
+
+    &.wrong {
+      opacity: var(--dim);
+    }
+  }
+
+  h2.prompt {
+    margin: 0;
+  }
+}

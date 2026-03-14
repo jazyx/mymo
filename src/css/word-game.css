@@ -1,0 +1,34 @@
+/* Rules specific to the word-game module */
+.word-game {
+  --span-size: calc(var(--unit) * 10);
+  background-color: #ffe;
+
+  & p {
+    width: 100%;
+    display: flex;
+    margin: 0;
+    justify-content: space-around;
+
+    & span {
+      width: var(--span-size);
+      padding: 0.25em;
+      text-align: center;
+      font-weight: bold;
+      border: 1px outset #888;
+      border-radius: 0.5em;
+      cursor: pointer
+    }
+  }
+
+  &:has(.right) {
+    & p {
+      pointer-events: none;
+      cursor: default;
+
+      & span:not(.right) {
+        color: #999;
+        font-weight: normal;
+      }
+    }
+  }
+}

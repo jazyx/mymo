@@ -1,0 +1,59 @@
+/* Rules shared by all xxxx-game modules */
+[class$=-game] {
+  --green: #090;
+  --ratio: calc(2 / 3);
+  --width: min(100vw, calc(100vh) * var(--ratio));
+  --height: min(100vh, calc(100vw) / var(--ratio));
+  --unit: calc(var(--height) / 100);
+  --font-size: calc(var(--unit) * 3);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: var(--width);
+  height: var(--height);
+  color: var(--dark);
+  font-size: var(--font-size);
+
+  h2 {
+    text-align: center;
+  }
+
+  button {
+    width: 98%;
+    margin: 0 1% 1%;
+    font-size: 1.25em;
+    padding: 0.25em 0;
+    border-radius: 0.5em;
+
+    &:not(:disabled) {
+      cursor: pointer;
+    }
+
+    &:disabled {
+      background-color: #999;
+    }
+  }
+
+  .wrong {
+    font-weight: normal;
+    color: #999;
+    background-color: #ccc;
+    border-color: transparent;
+    pointer-events: none;
+    cursor: default
+  }
+
+  .right {
+    color: #fff;
+    background-color: var(--green);
+    cursor: pointer;
+  }
+
+  &:has(.right) {
+    & button {
+      color: #fff;
+      background-color: var(--green);
+    }
+  }
+}
