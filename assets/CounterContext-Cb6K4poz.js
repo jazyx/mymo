@@ -1,0 +1,1 @@
+import{r as t,j as s}from"./index-BXSILDOg.js";const e=t.createContext(),a=({children:o})=>{const[r,n]=t.useState(0);return s.jsx(e.Provider,{value:{score:r,setScore:n},children:o})},x={label:"Counter",Context:e,Provider:a};export{e as CounterContext,a as CounterProvider,x as default};

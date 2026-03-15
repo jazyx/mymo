@@ -1,0 +1,41 @@
+[
+  {
+    "label": "Home",
+    "route": "/",
+    "path": "./modules/Home.jsx"
+  },
+  {
+    "label": "Counter",
+    "route": "/counter",
+    "path": "./modules/Counter.jsx",
+    "hidden": true
+  },
+  {
+    "label": "Word Game",
+    "route": "/word-game",
+    "path": "./modules/WordGame.jsx"
+  },
+  {
+    "label": "Picture Game",
+    "route": "/picture-game",
+    "path": "./modules/PictureGame.jsx"
+  },
+  {
+    "label": "Buggy Module",
+    "route": "/buggy",
+    "path": "./modules/BuggyModule.jsx",
+    "hidden": true
+  },
+  {
+    "label": "Network Error",
+    "route": "/network-error",
+    "path": "./modules/__NetworkError__.jsx",
+    "hidden": true
+  },
+  {
+    "label": "Missing Module",
+    "route": "/missing",
+    "path": "./modules/MissingModule.jsx",
+    "hidden": true
+  }
+]
