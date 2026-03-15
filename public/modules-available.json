@@ -13,13 +13,17 @@
   {
     "label": "Word Game",
     "route": "/word-game",
-    "path": "./modules/WordGame.jsx"
+    "path": "./modules/GameWrapper.jsx",
+    "game_path": "./modules/WordGame.jsx"
   },
   {
     "label": "Picture Game",
     "route": "/picture-game",
-    "path": "./modules/PictureGame.jsx"
+    "path": "./modules/GameWrapper.jsx",
+    "game_path": "./modules/PictureGame.jsx"
   },
+
+  
   {
     "label": "Buggy Module",
     "route": "/buggy",

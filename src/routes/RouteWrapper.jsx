@@ -12,7 +12,7 @@ const lazyCache = new Map()
 
 
 // Don't reload a module if it is already cached
-function getLazyModule(path) {
+export function getLazyModule(path) {
   let Module = lazyCache.get(path)
 
   if (!Module) {

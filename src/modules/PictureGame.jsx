@@ -23,7 +23,9 @@ export default function () {
   } = useGameCore({ words })
 
 
-  const images = choices.map( word => {
+  const images = choices
+    .filter( word => !!word )
+    .map(word => {
     const className = (clicked.indexOf(word) < 0)
       ? null
       : (found === word)

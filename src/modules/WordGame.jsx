@@ -11,7 +11,7 @@ import "../css/word-game.css"
 const wordsAPI = 'words.json'
 
 
-export default function () {
+export default function WordGame() {
   const { words } = useFetchWords({ wordsAPI })
   
   const {
@@ -24,7 +24,9 @@ export default function () {
   } = useGameCore({ words })
 
 
-  const spans = choices.map(word => {
+  const spans = choices
+    .filter( word => !!word )
+    .map(word => {
     const className =
       clicked.indexOf(word) < 0
         ? null
@@ -35,6 +37,7 @@ export default function () {
     return (
       <span
         key={word}
+        data-key={word}
         className={className}
         onClick={() => checkAnswer(word)}
       >
