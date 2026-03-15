@@ -34,7 +34,7 @@ export default function () {
       <img
         key={word}
         className={className}
-        src={`../images/${word}.webp`}
+        src={`images/${word}.webp`}
         alt={word}
         onClick={() => checkAnswer(word)}
       />

@@ -128,6 +128,7 @@ export const ModulesProvider = ({ children }) => {
   const fetchModulesAvailable = () => {
     fetch(MODULES_API)
     .then(response => response.json())
+    .then(json => json.filter( item => !item.hidden ))
     .then(json => setModulesAvailable(json))
   }
 
