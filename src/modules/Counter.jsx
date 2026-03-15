@@ -18,7 +18,7 @@ import "../css/counter.css"
 const CONTEXTS = ["./state/dynamic/CounterContext.jsx"]
 
 
-export default () => {
+export default function Counter() {
   const insertProviders = useInsertProviders()
   // CounterContext will only become accessible after useEffect
   // has run after the component is mounted.

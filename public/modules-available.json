@@ -14,13 +14,27 @@
     "label": "Word Game",
     "route": "/word-game",
     "path": "./modules/GameWrapper.jsx",
-    "game_path": "./modules/WordGame.jsx"
+    "children": [
+      {
+        "label": "game",
+        "path": "./modules/WordGame.jsx"
+      },
+      {
+        "label": "cohost",
+        "path": "./modules/ChooseCoHost.jsx"
+      }
+    ]
   },
   {
     "label": "Picture Game",
     "route": "/picture-game",
     "path": "./modules/GameWrapper.jsx",
-    "game_path": "./modules/PictureGame.jsx"
+    "children": [
+      {
+        "label": "game",
+        "path": "./modules/PictureGame.jsx"
+      }
+    ]
   },
 
   

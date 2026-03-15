@@ -9,30 +9,43 @@ import { throbber } from '../component/Throbber'
 
 
 export default function GameWrapper(props) {
-  const { game_path } = props
-  const [ LazyModule, setLazyModule ] = useState(
-    () => () => <p>Loading...</p>
-  )
+  const { children } = props
+  const [ lazyModules, setLazyModules ] = useState({})
 
 
-  const loadModule = () => {
-      const Module = getLazyModule(game_path)
+  const loadChildren = () => {
+    children.forEach(({ label, path }) => {
+      const Module = getLazyModule(path)
 
       if (Module) {
-        setLazyModule(Module)
+        setLazyModules(current => {
+          if (!current[label]) {
+            current[label] = (
+              <Module
+                key={label}
+                label={label}
+                {...props}
+              />
+            )
+          }
+
+          return { ...current }
+        })
       }
-    }
 
-
-    useEffect(loadModule, [game_path])
-
-
-    return (
-      <>
-        <h1>Scores</h1>
-        <Suspense fallback={throbber}>
-          <LazyModule {...props} />
-        </Suspense>
-      </>
-    )
+    })
   }
+
+
+  useEffect(loadChildren, [children])
+
+
+  return (
+    <>
+      <h1>Scores</h1>
+      <Suspense fallback={throbber}>
+        {Object.values(lazyModules)}
+      </Suspense>
+    </>
+  )
+}

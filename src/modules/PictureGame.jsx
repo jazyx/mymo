@@ -11,7 +11,7 @@ import "../css/picture-game.css"
 const wordsAPI = 'words.json'
 
 
-export default function () {
+export default function PictureGame(props) {
   const { error, words } = useFetchWords({ wordsAPI })
   const {
     word,
