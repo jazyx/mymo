@@ -1,0 +1,14 @@
+li {
+  &.selected {
+    font-weight: bold;
+  }
+
+  &.disabled {
+    color: #888;
+  }
+}
+
+p.fail {
+  color: #f00;
+  font-weight: bold;
+}

@@ -1,8 +1,8 @@
 [
   {
-    "label": "Home",
+    "label": "Log In",
     "route": "/",
-    "path": "./modules/Home.jsx"
+    "path": "./modules/LogIn.jsx"
   },
   {
     "label": "Counter",
@@ -11,9 +11,14 @@
     "hidden": true
   },
   {
+    "label": "Class",
+    "route": "/class",
+    "path": "./modules/ClassWrapper.jsx"
+  },
+  {
     "label": "Word Game",
-    "route": "/word-game",
-    "path": "./modules/GameWrapper.jsx",
+    "route": "/class/word-game",
+    "path": "./modules/ClassWrapper.jsx",
     "children": [
       {
         "label": "game",
@@ -27,8 +32,8 @@
   },
   {
     "label": "Picture Game",
-    "route": "/picture-game",
-    "path": "./modules/GameWrapper.jsx",
+    "route": "/class/picture-game",
+    "path": "./modules/ClassWrapper.jsx",
     "children": [
       {
         "label": "game",

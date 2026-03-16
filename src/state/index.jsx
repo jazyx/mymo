@@ -10,7 +10,7 @@ import {
   useContext,
 } from 'react'
 import API from "./APIContext"
-import Records from "./RecordsContext"
+// import Records from "./RecordsContext"
 import Modules from "./ModulesContext"
 import moduleLoaders from '../moduleLoaders'
 
@@ -42,7 +42,7 @@ const DynamicProviderContext = createContext(null)
 export const Provider = ({ children }) => {
   const [ providers, setProviders ] = useState(() => [
     API,
-    Records,
+    // Records,
     Modules
   ])
   const [ error, setError ] = useState(null)

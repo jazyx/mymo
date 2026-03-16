@@ -75,7 +75,7 @@ const SOCKET_URL = `ws://${HOSTNAME}:${PORT}` // no trailing slash
 
 export const WSContext = createContext()
 
-let renders = 0
+// let renders = 0
 
 export const WSProvider = ({ children }) => {
 
@@ -95,7 +95,7 @@ export const WSProvider = ({ children }) => {
     recipient_id: {}
   })
 
-  console.log("render:", ++renders, ", socketRequested:", socketRequested)
+  // console.log("render:", ++renders, ", socketRequested:", socketRequested)
 
   // SOCKET MANAGEMENT // SOCKET MANAGEMENT // SOCKET MANAGEMENT //
 
@@ -114,7 +114,7 @@ export const WSProvider = ({ children }) => {
       return
     }
 
-    console.log("openSocket userRef.current:", userRef.current)
+    // console.log("openSocket userRef.current:", userRef.current)
 
     const socket = new WebSocket(SOCKET_URL)
     // console.log("openSocket")
@@ -307,6 +307,8 @@ export const WSProvider = ({ children }) => {
     const { user_name } = message
     setUserName(user_name)
 
+    console.log("SYSTEM user_name:", user_name)
+
     // dispatch({
     //   type: "SET_USER_NAME",
     //   payload: user_name
@@ -380,4 +382,11 @@ export const WSProvider = ({ children }) => {
       {children}
     </WSContext.Provider>
   )
+}
+
+
+export default {
+  label: "WS",
+  Context: WSContext,
+  Provider: WSProvider
 }
