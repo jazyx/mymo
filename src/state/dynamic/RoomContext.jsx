@@ -1,22 +1,22 @@
 /**
- * frontend/src/state/dynamic/ClassContext.jsx
+ * frontend/src/state/dynamic/RoomContext.jsx
  *
  * Dynamically loaded Context for keeping track of:
  *
- *   + Class members
+ *   + Room members
  *   + Current activity
  *   + Member scores
  *
  * • Below WSContext in the Provider component tree.
  * • Calls WSContext's requestSocket as soon as this is available.
- * • Sends "MYMO.JOIN_CLASS" message to backend as soon as the
+ * • Sends "MYMO.JOIN_ROOM" message to backend as soon as the
  *   userId has been set, so that it can be added as sender_id
  *   for the outgoing message.
- * • Treats incoming messages for "MYMO.CLASS_MEMBERS"
- *   using this to refreshClassMembers() and toggle cohost
+ * • Treats incoming messages for "MYMO.ROOM_MEMBERS"
+ *   using this to refreshRoomMembers() and toggle cohost
  *
- * For the first prototype, uses HARD-CODED class_name "Thursday"
- * as name of class, in order to obtain that class's members.
+ * For the first prototype, uses HARD-CODED room_name "Thursday"
+ * as name of room, in order to obtain that room's members.
  */
 
 
@@ -27,13 +27,13 @@ import {
   useEffect,
   useCallback
 } from 'react'
-import { getContextValues } from '../'
+import { getContextValues } from '..'
 
 
-export const ClassContext = createContext()
+export const RoomContext = createContext()
 
 
-export const ClassProvider = ({ children }) => {
+export const RoomProvider = ({ children }) => {
   const {
     requestSocket,
     socketIsOpen,
@@ -41,10 +41,10 @@ export const ClassProvider = ({ children }) => {
     treatMessageListener,
     sendMessage
   } = getContextValues("WSContext")
-  // HARD-CODED class_name // HARD-CODED class_name //
-  const [ class_name, setClass_name ] = useState("Thursday")
+  // HARD-CODED room_name // HARD-CODED room_name //
+  const [ room_name, setRoom_name ] = useState("Thursday")
 
-  const [ classMembers, setClassMembers ] = useState([])
+  const [ roomMembers, setRoomMembers ] = useState([])
   // user|setUser is handled as a useRef() so that it will never
   // go out of scope.
   const userRef = useRef()
@@ -57,12 +57,12 @@ export const ClassProvider = ({ children }) => {
   const [ scores, setScores ] = useState({})
 
 
-  const refreshClassMembers = useCallback(({ members }) => {
+  const refreshRoomMembers = useCallback(({ members }) => {
     // console.log(
-    //   "refreshClassMembers,
+    //   "refreshRoomMembers,
     //   JSON.stringify(members, null, 2)
     // )
-    setClassMembers(() => members)
+    setRoomMembers(() => members)
     const user = userRef.current
 
     if (user) {
@@ -81,13 +81,13 @@ export const ClassProvider = ({ children }) => {
   }, [])
 
 
-  const joinClass = () => {
+  const joinRoom = () => {
     if (!userId) { return }
 
     const message = {
       recipient_id: "MYMO",
-      subject: "MYMO.JOIN_CLASS",
-      class_name
+      subject: "MYMO.JOIN_ROOM",
+      room_name
     }
     sendMessage(message)
   }
@@ -98,8 +98,8 @@ export const ClassProvider = ({ children }) => {
 
     const listeners = [
       {
-        subject: "MYMO.CLASS_MEMBERS",
-        callback: refreshClassMembers
+        subject: "MYMO.ROOM_MEMBERS",
+        callback: refreshRoomMembers
       }
     ]
 
@@ -121,15 +121,15 @@ export const ClassProvider = ({ children }) => {
 
 
   useEffect(openSocket, [requestSocket])
-  useEffect(joinClass, [userId])
+  useEffect(joinRoom, [userId])
 
 
   return (
-    <ClassContext.Provider
+    <RoomContext.Provider
       value ={{
-        class_name,
-        classMembers,
-        refreshClassMembers,
+        room_name,
+        roomMembers,
+        refreshRoomMembers,
         user: userRef.current,
         setUser,
         // activity,
@@ -139,13 +139,13 @@ export const ClassProvider = ({ children }) => {
       }}
     >
       {children}
-    </ClassContext.Provider>
+    </RoomContext.Provider>
   )
 }
 
 
 export default {
-  label: "Class",
-  Context: ClassContext,
-  Provider: ClassProvider
+  label: "Room",
+  Context: RoomContext,
+  Provider: RoomProvider
 }

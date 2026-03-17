@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import { getContextValues, useInsertProviders } from '../state'
 import { Throbber } from '../component/Throbber'
 import { MemberList } from '../component/MemberList'
-import "../css/class.css"
+import "../css/room.css"
 
 
 // HARD-CODED link to the Context(s) required by this component.
@@ -16,7 +16,7 @@ import "../css/class.css"
 // available permanently.
 const CONTEXTS = [
   "./state/dynamic/WSContext.jsx",
-  "./state/dynamic/ClassContext.jsx"
+  "./state/dynamic/RoomContext.jsx"
 ]
 
 
@@ -41,16 +41,16 @@ export default function Home() {
     sendMessage
   } = getContextValues("WSContext")
   const {
-    class_name,
-    classMembers = [],
-    refreshClassMembers,
+    room_name,
+    roomMembers = [],
+    refreshRoomMembers,
     // user,
     setUser,
     // activity,
     // setActivity,
     // scores,
     // setScores,
-  } = getContextValues("ClassContext")
+  } = getContextValues("RoomContext")
 
 
   /**
@@ -66,11 +66,11 @@ export default function Home() {
       // Log in was successful.
       setUser(user)
 
-      // Update status of all class members.
-      refreshClassMembers({ members })
+      // Update status of all room members.
+      refreshRoomMembers({ members })
 
-      // Go to the Class page
-      navigate("/class/")
+      // Go to the Room page
+      navigate("/room/")
     }
   }
 
@@ -102,7 +102,7 @@ export default function Home() {
       recipient_id: "SYSTEM",
       user_name: userName,
       key_phrase,
-      class_name
+      room_name
     }
 
     sendMessage(message)
@@ -163,7 +163,7 @@ export default function Home() {
   }
 
 
-  if (!classMembers.length) {
+  if (!roomMembers.length) {
     return <Throbber />
   }
 

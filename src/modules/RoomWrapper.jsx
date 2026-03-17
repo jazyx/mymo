@@ -1,5 +1,5 @@
 /**
- * frontend/src/modules/ClassWrapper.jsx
+ * frontend/src/modules/RoomWrapper.jsx
  */
 
 
@@ -8,30 +8,30 @@ import { getContextValues, useInsertProviders } from '../state'
 import { getLazyModule } from '../routes/RouteWrapper'
 import { MemberList } from '../component/MemberList'
 import { throbber } from '../component/Throbber'
-import "../css/class.css"
+import "../css/room.css"
 
 
 const CONTEXTS = [
   './state/dynamic/WSContext.jsx',
-  './state/dynamic/ClassContext.jsx'
+  './state/dynamic/RoomContext.jsx'
 ]
 
 
-export default function ClassWrapper(props) {
+export default function RoomWrapper(props) {
   const insertProviders = useInsertProviders()
-  // ClassContext will only become accessible after useEffect
+  // RoomContext will only become accessible after useEffect
   // has run after the component is mounted.
   const [ error, setError ] = useState(0)
   const { children=[] } = props
   const [ lazyModules, setLazyModules ] = useState({})
   const { sendMessage } = getContextValues("WSContext")
   const {
-    class_name,
+    room_name,
     user,
-    classMembers,
+    roomMembers,
     scores,
     setScores,
-  } = getContextValues("ClassContext")
+  } = getContextValues("RoomContext")
 
 
   const loadContexts = () => {
@@ -92,7 +92,7 @@ export default function ClassWrapper(props) {
     const message = {
       subject: "MYMO.SET_COHOST",
       recipient_id: "MYMO",
-      class_name,
+      room_name,
       cohost_id
     }
     sendMessage(message)
@@ -109,7 +109,7 @@ export default function ClassWrapper(props) {
 
   return (
     <div
-      id="class-wrapper"
+      id="room-wrapper"
     >
       <MemberList {...memberListProps}/>
       <Suspense fallback={throbber}>

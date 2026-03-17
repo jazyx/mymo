@@ -15,13 +15,13 @@ export function MemberList(props) {
   } = props
   const {
     user,
-    classMembers = [],
-    // setClassMembers,
+    roomMembers = [],
+    // setRoomMembers,
     // activity,
     // setActivity,
     scores,
     // setScores,
-  } = getContextValues("ClassContext")
+  } = getContextValues("RoomContext")
 
 
   const byScoreAndName = (a, b) => {
@@ -51,7 +51,7 @@ export function MemberList(props) {
   }
 
 
-  const membersList = classMembers
+  const membersList = roomMembers
     .sort(byScoreAndName)
     .map( member => {
       const { _id, name } = member

@@ -21,7 +21,7 @@ p.fail {
   font-weight: bold;
 }
 
-#class-wrapper {
+#room-wrapper {
   font-weight: bold;
 
   & li.teacher {

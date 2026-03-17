@@ -11,14 +11,14 @@
     "hidden": true
   },
   {
-    "label": "Class",
-    "route": "/class",
-    "path": "./modules/ClassWrapper.jsx"
+    "label": "Room",
+    "route": "/room",
+    "path": "./modules/RoomWrapper.jsx"
   },
   {
     "label": "Word Game",
-    "route": "/class/word-game",
-    "path": "./modules/ClassWrapper.jsx",
+    "route": "/room/word-game",
+    "path": "./modules/RoomWrapper.jsx",
     "children": [
       {
         "label": "game",
@@ -32,8 +32,8 @@
   },
   {
     "label": "Picture Game",
-    "route": "/class/picture-game",
-    "path": "./modules/ClassWrapper.jsx",
+    "route": "/room/picture-game",
+    "path": "./modules/RoomWrapper.jsx",
     "children": [
       {
         "label": "game",
