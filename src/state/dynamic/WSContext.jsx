@@ -218,6 +218,8 @@ export const WSProvider = ({ children }) => {
                              || (listenerMap[value] = new Set())
               listeners[action](callback)
 
+              // console.log("listeners:", key, value, listeners)
+
               treated += 1
             }
           })
@@ -278,11 +280,11 @@ export const WSProvider = ({ children }) => {
         allListeners[key][message[key]] || []
       )
 
-      handled = listeners.some( listener => (
-        listener( message, handled )
+      listeners.forEach( listener => (
+        handled = listener( message, handled ) || handled
         // later listeners may choose to ignore a message that has
         // already been handled
-      )) || handled
+      ))
 
       heardBy += listeners.length
     })
@@ -330,7 +332,9 @@ export const WSProvider = ({ children }) => {
 
     treatMessageListener("add", listeners)
 
-    return () => treatMessageListener("delete", listeners)
+    return () => {
+      treatMessageListener("delete", listeners)
+    }
   }
 
 

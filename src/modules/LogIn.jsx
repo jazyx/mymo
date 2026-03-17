@@ -6,15 +6,18 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getContextValues, useInsertProviders } from '../state'
 import { Throbber } from '../component/Throbber'
-import "../css/home.css"
+import { MemberList } from '../component/MemberList'
+import "../css/class.css"
 
 
 // HARD-CODED link to the Context(s) required by this component.
 // Contexts and Providers will be inserted dynamically on useEffect
 // after the components is first mounted. They will then remain
 // available permanently.
-const CONTEXTS = ["./state/dynamic/WSContext.jsx"]
-const CLASS_NAME = "Thursday"
+const CONTEXTS = [
+  "./state/dynamic/WSContext.jsx",
+  "./state/dynamic/ClassContext.jsx"
+]
 
 
 export default function Home() {
@@ -23,47 +26,51 @@ export default function Home() {
   // CounterContext will only become accessible after useEffect
   // has run after the component is mounted.
   const [ error, setError ] = useState(0)
-  const [ classMembers, setClassMembers ] = useState([])
   const [ userName, setUserName ] = useState("") // local choice
   const [ key_phrase, setKey_phrase ] = useState("")
   const [ failMessage, setFailMessage ] = useState("")
-  
-  
-    
+
+
   const {
     userId, // updated after re-render
-    user_name,
-    socketIsOpen,
-    socketError,
-    requestSocket,
+    // user_name,
+    // socketIsOpen,
+    // socketError,
+    // requestSocket,
     treatMessageListener,
     sendMessage
   } = getContextValues("WSContext")
+  const {
+    class_name,
+    classMembers = [],
+    refreshClassMembers,
+    // user,
+    setUser,
+    // activity,
+    // setActivity,
+    // scores,
+    // setScores,
+  } = getContextValues("ClassContext")
 
 
-  const joinClass = () => {
-    const message = {
-      recipient_id: "MYMO",
-      subject: "MYMO.JOIN_CLASS",
-      class_name: CLASS_NAME // HARD-CODED for now
-    }
-    sendMessage(message)
-  }
-
-
-  const showClassMembers = ({ content }) => {
-    setClassMembers(content)
-  }
-
-
-  const checkLogInResult = ({ content }) => {
-    if (content === "LOGIN FAILED") {
-      // setUserName("")
-      setKey_phrase("")
+  /**
+   * Sent by Mymo login() only to the client logging in
+   * @param {*} param0 
+   */
+  const checkLogInResult = ({ error, user, members }) => {
+    if (error) { 
+      setKey_phrase("") // Assume key_phrase was incorrect
       setFailMessage("Key phrase not valid. Try again.")
-    } else {
-      setFailMessage("")
-      showClassMembers({ content })
+
+    } else { 
+      // Log in was successful.
+      setUser(user)
+
+      // Update status of all class members.
+      refreshClassMembers({ members })
+
+      // Go to the Class page
+      navigate("/class/")
     }
   }
 
@@ -85,7 +92,6 @@ export default function Home() {
 
 
   const upateKeyPhrase = ({target}) => {
-    console.log("target.value:", target.value)
     setKey_phrase(target.value)
   }
 
@@ -93,10 +99,10 @@ export default function Home() {
   const logIn = () => {
     const message = {
       subject: "LOG_IN",
-      recipient_id: "MYMO",
+      recipient_id: "SYSTEM",
       user_name: userName,
       key_phrase,
-      class_name: CLASS_NAME
+      class_name
     }
 
     sendMessage(message)
@@ -115,44 +121,24 @@ export default function Home() {
   }
 
 
-  const openSocket = () => {
-    if (requestSocket) {
-      requestSocket()
-    }
-  }
-
-
   const setMessageListeners = () => {
     if (!userId) { return }
-    treatMessageListener(
-      "add",
-      [
-        {
-          subject: "MYMO.CLASS_MEMBERS",
-          callback: showClassMembers
-        },
-        {
-          subject: "MYMO.LOGGED_IN",
-          callback: checkLogInResult
-        }
-      ]
-    )
 
-    joinClass()
-  }
+    const listeners = [
+      {
+        subject: "MYMO.LOGIN_RESULT",
+        callback: checkLogInResult
+      }
+    ]
 
+    treatMessageListener("add", listeners)
 
-  const goClassRoute = () => {
-    if (user_name) {
-      navigate("/class/")
-    }
+    return () => treatMessageListener("delete", listeners)
   }
 
 
   useEffect(loadContexts, [])
-  useEffect(openSocket, [requestSocket])
   useEffect(setMessageListeners, [userId])
-  useEffect(goClassRoute, [user_name])
 
 
   if (error) {
@@ -160,36 +146,32 @@ export default function Home() {
   }
 
 
-  const memberList = classMembers.map(({ _id, name, online }) => {
-    const className = ( name === userName )
+  const classPicker = ({ _id, name, online }) => {
+    return ( name === userName )
       ? `selected${online ? " disabled" : ""}`
       : (online)
         ? "disabled"
         : null
-
-    return (
-      <li
-        key={_id}
-        className={className}
-        onClick={chooseName}
-        disabled={online}
-      >
-        {name}
-      </li>
-    )
-  })
-
-
-  if (!memberList.length) {
-    return <Throbber />
   }
 
+
+  const memberListProps = {
+    classPicker,
+    disabled: false,
+    onClick: chooseName,
+    showScore: false
+  }
+
+
+  if (!classMembers.length) {
+    return <Throbber />
+  }
 
 
   return (
     <>
       <h3>Choose your name:</h3>
-      <ul>{memberList}</ul>
+      <MemberList {...memberListProps} />
       <label>
         <span>Enter your key phrase:</span>
         <input

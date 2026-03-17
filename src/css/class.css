@@ -1,0 +1,51 @@
+ol.disabled {
+  pointer-events: none;
+}
+
+li {
+  cursor: pointer;
+
+  &.selected {
+    font-weight: bold;
+  }
+
+  &.disabled {
+    color: #888;
+    pointer-events: none;
+    cursor: default;
+  }
+}
+
+p.fail {
+  color: #f00;
+  font-weight: bold;
+}
+
+#class-wrapper {
+  font-weight: bold;
+
+  & li.teacher {
+    color: #0c0;
+  }
+  & li.cohost {
+    color: #f90;
+  }
+
+  & li.offline {
+    opacity: 0.5;
+    font-weight: normal;
+  }
+
+  & li span {
+    display: inline-block;
+    width: 4em;
+
+    &.name {
+      text-align: left;
+    }
+
+    &.score {
+      text-align: right;
+    }
+  }
+}

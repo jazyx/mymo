@@ -1,34 +1,39 @@
 /**
- * frontend/src/modules/GameWrapper.jsx
+ * frontend/src/modules/ClassWrapper.jsx
  */
 
 
 import { useState, useEffect, Suspense } from 'react'
 import { getContextValues, useInsertProviders } from '../state'
 import { getLazyModule } from '../routes/RouteWrapper'
+import { MemberList } from '../component/MemberList'
 import { throbber } from '../component/Throbber'
+import "../css/class.css"
 
 
-const CONTEXTS = ['./state/dynamic/ClassContext.jsx']
+const CONTEXTS = [
+  './state/dynamic/WSContext.jsx',
+  './state/dynamic/ClassContext.jsx'
+]
 
 
-export default function GameWrapper(props) {
+export default function ClassWrapper(props) {
   const insertProviders = useInsertProviders()
   // ClassContext will only become accessible after useEffect
   // has run after the component is mounted.
   const [ error, setError ] = useState(0)
   const { children=[] } = props
   const [ lazyModules, setLazyModules ] = useState({})
+  const { sendMessage } = getContextValues("WSContext")
   const {
+    class_name,
+    user,
     classMembers,
-    setClassMembers,
-    activity,
-    setActivity,
     scores,
     setScores,
   } = getContextValues("ClassContext")
-  
-  
+
+
   const loadContexts = () => {
     const insertContexts = async () => {
       // React can't intercept an error that occurs in an async
@@ -69,12 +74,47 @@ export default function GameWrapper(props) {
   useEffect(loadChildren, [children])
 
 
+  const classPicker = ({ role, online }) => {
+    return (role === "teacher")
+        ? `teacher${online ? "" : " offline"}`
+        : (role === "cohost")
+          ? `cohost${online ? "" : " offline"}`
+          : (online)
+            ? null
+            : "offline"
+  }
+
+
+  const setCohost = ({ target }) => {
+    target = target.closest("li")
+    const cohost_id = target.dataset.id
+
+    const message = {
+      subject: "MYMO.SET_COHOST",
+      recipient_id: "MYMO",
+      class_name,
+      cohost_id
+    }
+    sendMessage(message)
+  }
+
+
+  const memberListProps = {
+    classPicker,
+    disabled: !user || user.role === "student",
+    onClick: setCohost,
+    showScore: true
+  }
+
+
   return (
-    <>
-      <h1>Scores</h1>
+    <div
+      id="class-wrapper"
+    >
+      <MemberList {...memberListProps}/>
       <Suspense fallback={throbber}>
         {Object.values(lazyModules)}
       </Suspense>
-    </>
+    </div>
   )
 }
