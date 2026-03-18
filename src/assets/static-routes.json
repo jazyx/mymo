@@ -3,10 +3,5 @@
     "label": "Home",
     "route": "/",
     "component": "Home"
-  },
-  {
-    "label": "Room",
-    "route": "/room/:RoomName",
-    "component": "Room"
   }
 ]

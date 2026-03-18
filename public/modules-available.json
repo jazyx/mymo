@@ -1,19 +1,8 @@
 [
   {
-    "label": "Log In",
-    "route": "/",
-    "path": "./modules/LogIn.jsx"
-  },
-  {
-    "label": "Counter",
-    "route": "/counter",
-    "path": "./modules/Counter.jsx",
-    "hidden": true
-  },
-  {
     "label": "Room",
-    "route": "/room",
-    "path": "./modules/RoomWrapper.jsx"
+    "route": "/room/:RoomName",
+    "path": "./modules/Room.jsx"
   },
   {
     "label": "Activities",
@@ -28,10 +17,6 @@
       {
         "label": "game",
         "path": "./modules/WordGame.jsx"
-      },
-      {
-        "label": "cohost",
-        "path": "./modules/ChooseCoHost.jsx"
       }
     ]
   },
@@ -45,25 +30,5 @@
         "path": "./modules/PictureGame.jsx"
       }
     ]
-  },
-
-  
-  {
-    "label": "Buggy Module",
-    "route": "/buggy",
-    "path": "./modules/BuggyModule.jsx",
-    "hidden": true
-  },
-  {
-    "label": "Network Error",
-    "route": "/network-error",
-    "path": "./modules/__NetworkError__.jsx",
-    "hidden": true
-  },
-  {
-    "label": "Missing Module",
-    "route": "/missing",
-    "path": "./modules/MissingModule.jsx",
-    "hidden": true
   }
 ]

@@ -1,0 +1,27 @@
+[
+  {
+    "label": "Log In",
+    "route": "/",
+    "path": "./modules/LogIn.jsx"
+  },
+  {
+    "label": "Counter",
+    "route": "/counter",
+    "path": "./modules/Counter.jsx"
+  },
+  {
+    "label": "Buggy Module",
+    "route": "/buggy",
+    "path": "./modules/BuggyModule.jsx"
+  },
+  {
+    "label": "Network Error",
+    "route": "/network-error",
+    "path": "./modules/__NetworkError__.jsx"
+  },
+  {
+    "label": "Missing Module",
+    "route": "/missing",
+    "path": "./modules/MissingModule.jsx"
+  }
+]

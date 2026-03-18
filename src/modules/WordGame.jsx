@@ -3,8 +3,10 @@
  */
 
 
+// <<< These could be lazy-loaded
 import { useGameCore } from "./useGameCore"
 import { useFetchWords } from "./useFetchWords"
+// >>>
 import "../css/shared.css"
 import "../css/word-game.css"
 

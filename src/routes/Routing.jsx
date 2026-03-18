@@ -9,10 +9,12 @@ import {
   Route
 } from 'react-router-dom'
 import staticRoutes from '../assets/static-routes.json' with { type: "json"}
+import dynamicRoutes from '../assets/dynamic-routes.json' with { type: "json"}
 import components from '../pages'
+import NotAvailable from '../pages/NotAvailable'
+
 import { getContextValues } from '../state'
 import { RouteWrapper } from './RouteWrapper'
-import { NotAvailable } from '../component/NotAvailable'
 
 
 const getRoute = ({ route, component }) => {
@@ -43,7 +45,7 @@ export const Routing = () => {
 
   let routes = routeMap.map( routeData => getRoute(routeData))
 
-  const more = modulesAvailable.map( moduleData => {
+  const more = dynamicRoutes.map( moduleData => {
     const { route } = moduleData // path, label
 
     return (
@@ -60,6 +62,8 @@ export const Routing = () => {
     )
   })
   routes = [...routes, ...more]
+
+
 
   // <<< HACK
   // The NotAvailable component will be shown momentarily if the

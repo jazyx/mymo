@@ -5,7 +5,7 @@
 
 import { useState, useEffect, lazy, Suspense } from 'react'
 import moduleLoaders from '../moduleLoaders'
-import { throbber, Throbber } from '../component/Throbber'
+import { throbber, Throbber } from '../components/Throbber'
 
 
 const lazyCache = new Map()

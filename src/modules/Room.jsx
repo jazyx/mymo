@@ -1,5 +1,31 @@
 /**
  * frontend/src/pages/Room.jsx
+ * 
+ * This is an optional/dynamically-imported module. It will not be
+ * required when setting up a school, class membership or
+ * sub-groups. However, a Route needs to be provided for it from
+ * the beginning, so that it can be lazy-loaded when required.
+ * 
+ * Visiting /room/:RoomName sets roomName in RoomContext and this
+ * triggers a call to JOIN_ROOM as soon as WebSocket connection
+ * is established. The response to this call ("MYMO.ROOM_MEMBERS")
+ * includes:
+ *  
+ * • The members of the named Room, from the database
+ * • (just this once) the activities for this Room
+ * 
+ * In other words, both members and activities are fixed
+ * immediately after the WebSocket connection is established.
+ * 
+ * This component allows users to log in with one of the known
+ * member names for this Room, if they know the key_phrase for that
+ * member (or if no key_phrase has been set yet).
+ * 
+ * If login is successful...
+ * 
+ *   navigate(`/room/${RoomName}/Activities`)
+ * 
+ * ... is called. This 
  */
 
 
@@ -7,8 +33,8 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { getContextValues, useInsertProviders } from '../state'
-import { Throbber } from '../component/Throbber'
-import { MemberList } from '../component/MemberList'
+import { Throbber } from '../components/Throbber'
+import { MemberList } from '../components/MemberList'
 import "../css/room.css"
 
 
@@ -22,39 +48,32 @@ const CONTEXTS = [
 ]
 
 
-export default function LogIn() {
-  const params = useParams()
-  const { RoomName } = params
-  const navigate = useNavigate()
+export default function Room() {
+  const { RoomName } = useParams() // to be set when Contexts set
+  const navigate = useNavigate()   // used after successful login
+
   const insertProviders = useInsertProviders()
-  // CounterContext will only become accessible after useEffect
-  // has run after the component is mounted.
-  const [ error, setError ] = useState(0)
-  const [ userName, setUserName ] = useState("") // local choice
+  // WSContext and RoomContext will only become accessible after
+  // useEffect has run after the component is mounted.
+  const [ error, setError ] = useState(0) // in Contexts fail
+
+  // Choosing userName from member list; providing key_phrase
+  const [ userName, setUserName ] = useState("")
   const [ key_phrase, setKey_phrase ] = useState("")
   const [ failMessage, setFailMessage ] = useState("")
 
 
   const {
-    userId, // updated after re-render
-    // user_name,
-    // socketIsOpen,
-    // socketError,
-    // requestSocket,
+    userId, // updated after re-render; runs setMessageListeners()
     treatMessageListener,
     sendMessage
   } = getContextValues("WSContext")
   const {
-    roomName,
-    setRoomName,
+    setRoomName,        // RoomName read with useParams()
+    roomName,           // required for logIn
     roomMembers = [],
-    refreshRoomMembers,
-    // user,
-    setUser,
-    // activity,
-    // setActivity,
-    // scores,
-    // setScores,
+    refreshRoomMembers, // handles user's new logged-in status
+    setUser,            // user set here, but not read
   } = getContextValues("RoomContext")
 
 
@@ -81,8 +100,11 @@ export default function LogIn() {
 
 
   const chooseName = ({target}) => {
-    setUserName(target.textContent)
-
+    const user_name = target.textContent
+    setUserName(user_name)
+    if (key_phrase) {
+      logIn(user_name)
+    }
   }
 
 
@@ -101,11 +123,15 @@ export default function LogIn() {
   }
 
 
-  const logIn = () => {
+  const logIn = (user_name) => {
+    if (typeof user_name !== "string") {
+      user_name = userName
+    }
+
     const message = {
       subject: "LOG_IN",
       recipient_id: "SYSTEM",
-      user_name: userName,
+      user_name,
       key_phrase,
       roomName
     }
@@ -128,7 +154,7 @@ export default function LogIn() {
 
   const defineRoomName = () => {
     if (!setRoomName) { return }
-    setRoomName(RoomName)
+    setRoomName(RoomName) // from params()
   }
 
 
@@ -195,7 +221,7 @@ export default function LogIn() {
       </label>
       <button
         onClick={logIn}
-        disabled={!userName || !key_phrase}
+        disabled={!roomName || !userName || !key_phrase}
       >
         Log In
       </button>

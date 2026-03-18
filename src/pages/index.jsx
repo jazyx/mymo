@@ -3,11 +3,9 @@
  */
 
 import Home from "./Home"
-import Room from "./Room"
-import { NotAvailable } from "../component/NotAvailable"
+// import { NotAvailable } from "./NotAvailable"
 
 export default {
   Home,
-  Room,
-  NotAvailable
+  // NotAvailable
 }

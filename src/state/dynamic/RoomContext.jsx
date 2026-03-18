@@ -36,32 +36,38 @@ export const RoomContext = createContext()
 export const RoomProvider = ({ children }) => {
   const {
     requestSocket,
-    socketIsOpen,
     userId,
     treatMessageListener,
     sendMessage
   } = getContextValues("WSContext")
   // HARD-CODED roomName // HARD-CODED roomName //
-  const [ roomName, setRoomName ] = useState("Thursday")
+  const [ roomName, setRoomName ] = useState()
 
   const [ roomMembers, setRoomMembers ] = useState([])
-  // user|setUser is handled as a useRef() so that it will never
-  // go out of scope.
+  // user|setUser and available|setAvailable are handled by
+  // useRef() so that theny will never go out of scope.
   const userRef = useRef()
   const setUser = user => {
     userRef.current = user // provided as user: userRef.current
   }
+  const availableRef = useRef([])
+  const setAvailable = activities => {
+    availableRef.current = activities
+  }
 
-  const [ available, setAvailable ] = useState([])
   const [ activity, setActivity ] = useState("")
   const [ scores, setScores ] = useState({})
 
 
-  const refreshRoomMembers = useCallback(({ members }) => {
-    // console.log(
-    //   "refreshRoomMembers,
-    //   JSON.stringify(members, null, 2)
-    // )
+  const refreshRoomMembers = useCallback(({ 
+    members,
+    activities
+  }) => {
+    if (activities) { // only sent after joinRoom
+      setAvailable(activities)
+      console.log("activities:", activities)
+    }
+
     setRoomMembers(() => members)
     const user = userRef.current
 
@@ -133,6 +139,8 @@ export const RoomProvider = ({ children }) => {
         refreshRoomMembers,
         user: userRef.current,
         setUser,
+        available: availableRef.current,
+        setAvailable,
         // activity,
         // setActivity,
         scores,

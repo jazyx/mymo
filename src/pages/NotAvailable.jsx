@@ -13,7 +13,7 @@ import { useLocation } from 'react-router-dom'
 import { getContextValues } from '../state'
 
 
-export const NotAvailable = () => {
+export default function NotAvailable() {
   const location = useLocation()
   const { badLinks } = getContextValues("ModulesContext")
 
@@ -24,7 +24,7 @@ export const NotAvailable = () => {
 
   const feature = (badLink)
     ? `${badLink.label}`
-    : route
+    : `"${route.replace(/^\//, "")}"`
 
   return (
     <div

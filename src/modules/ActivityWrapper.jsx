@@ -4,10 +4,15 @@
 
 
 import { useState, useEffect, Suspense } from 'react'
+import {
+  useLocation,
+  useNavigate
+} from 'react-router-dom'
+
 import { getContextValues, useInsertProviders } from '../state'
 import { getLazyModule } from '../routes/RouteWrapper'
-import { MemberList } from '../component/MemberList'
-import { throbber } from '../component/Throbber'
+import { MemberList } from '../components/MemberList'
+import { throbber } from '../components/Throbber'
 import "../css/room.css"
 
 
@@ -18,6 +23,9 @@ const CONTEXTS = [
 
 
 export default function RoomWrapper(props) {
+  const location = useLocation()
+  const navigate = useNavigate()
+
   const insertProviders = useInsertProviders()
   // RoomContext will only become accessible after useEffect
   // has run after the component is mounted.
@@ -28,13 +36,22 @@ export default function RoomWrapper(props) {
   const {
     roomName,
     user,
-    roomMembers,
+    available,
     scores,
     setScores,
   } = getContextValues("RoomContext")
 
+  console.log("available:", available)
+
 
   const loadContexts = () => {
+    if (!user) {
+      // Visit started at this page, so user has not been set yet.
+      // Return to the Room Login page.
+      const parent = location.pathname.replace(/\/Activities$/, "")
+      return navigate(parent)
+    }
+
     const insertContexts = async () => {
       // React can't intercept an error that occurs in an async
       // function, so we have to catch it here and throw it during

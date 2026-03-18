@@ -1,0 +1,12 @@
+[
+  {
+    "label": "Room",
+    "route": "/room/:RoomName",
+    "path": "./modules/Room.jsx"
+  },
+  {
+    "label": "Activities",
+    "route": "/room/:RoomName/Activities",
+    "path": "./modules/ActivityWrapper.jsx"
+  }
+]
