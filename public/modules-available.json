@@ -16,6 +16,11 @@
     "path": "./modules/RoomWrapper.jsx"
   },
   {
+    "label": "Activities",
+    "route": "/room/:RoomName/Activities",
+    "path": "./modules/RoomWrapper.jsx"
+  },
+  {
     "label": "Word Game",
     "route": "/room/word-game",
     "path": "./modules/RoomWrapper.jsx",

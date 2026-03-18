@@ -15,7 +15,7 @@
  * • Treats incoming messages for "MYMO.ROOM_MEMBERS"
  *   using this to refreshRoomMembers() and toggle cohost
  *
- * For the first prototype, uses HARD-CODED room_name "Thursday"
+ * For the first prototype, uses HARD-CODED roomName "Thursday"
  * as name of room, in order to obtain that room's members.
  */
 
@@ -41,8 +41,8 @@ export const RoomProvider = ({ children }) => {
     treatMessageListener,
     sendMessage
   } = getContextValues("WSContext")
-  // HARD-CODED room_name // HARD-CODED room_name //
-  const [ room_name, setRoom_name ] = useState("Thursday")
+  // HARD-CODED roomName // HARD-CODED roomName //
+  const [ roomName, setRoomName ] = useState("Thursday")
 
   const [ roomMembers, setRoomMembers ] = useState([])
   // user|setUser is handled as a useRef() so that it will never
@@ -87,7 +87,7 @@ export const RoomProvider = ({ children }) => {
     const message = {
       recipient_id: "MYMO",
       subject: "MYMO.JOIN_ROOM",
-      room_name
+      roomName
     }
     sendMessage(message)
   }
@@ -127,7 +127,8 @@ export const RoomProvider = ({ children }) => {
   return (
     <RoomContext.Provider
       value ={{
-        room_name,
+        roomName,
+        setRoomName,
         roomMembers,
         refreshRoomMembers,
         user: userRef.current,

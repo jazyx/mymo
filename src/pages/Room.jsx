@@ -1,8 +1,10 @@
 /**
- * src/modules/Home.jsx
+ * frontend/src/pages/Room.jsx
  */
 
+
 import { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { getContextValues, useInsertProviders } from '../state'
 import { Throbber } from '../component/Throbber'
@@ -20,7 +22,9 @@ const CONTEXTS = [
 ]
 
 
-export default function Home() {
+export default function LogIn() {
+  const params = useParams()
+  const { RoomName } = params
   const navigate = useNavigate()
   const insertProviders = useInsertProviders()
   // CounterContext will only become accessible after useEffect
@@ -42,6 +46,7 @@ export default function Home() {
   } = getContextValues("WSContext")
   const {
     roomName,
+    setRoomName,
     roomMembers = [],
     refreshRoomMembers,
     // user,
@@ -69,8 +74,8 @@ export default function Home() {
       // Update status of all room members.
       refreshRoomMembers({ members })
 
-      // Go to the Room page
-      navigate("/room/")
+      // Go to the Activities page
+      navigate(`/room/${RoomName}/Activities`)
     }
   }
 
@@ -121,6 +126,12 @@ export default function Home() {
   }
 
 
+  const defineRoomName = () => {
+    if (!setRoomName) { return }
+    setRoomName(RoomName)
+  }
+
+
   const setMessageListeners = () => {
     if (!userId) { return }
 
@@ -138,6 +149,7 @@ export default function Home() {
 
 
   useEffect(loadContexts, [])
+  useEffect(defineRoomName, [setRoomName])
   useEffect(setMessageListeners, [userId])
 
 

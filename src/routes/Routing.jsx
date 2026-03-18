@@ -3,25 +3,47 @@
  */
 
 
+import { useState, useEffect } from 'react'
 import { 
   Routes,
-  Route,
-  Navigate
+  Route
 } from 'react-router-dom'
+import staticRoutes from '../assets/static-routes.json' with { type: "json"}
+import components from '../pages'
 import { getContextValues } from '../state'
 import { RouteWrapper } from './RouteWrapper'
 import { NotAvailable } from '../component/NotAvailable'
 
 
+const getRoute = ({ route, component }) => {
+  const Component = components[component]
+  return <Route
+    key={route}
+    path={route}
+    element={
+      <Component />
+    }
+  />
+}
 
-export const Routing = (props) => {
+
+export const Routing = () => {
+  const [ routeMap, setRouteMap ] = useState(staticRoutes)
+  const notFound = {
+    "label": "Not Available",
+    "route": "*",
+    "component": "NotAvailable"
+  }
+
+  
   const {
     modulesAvailable,
     setRouteAndLabel
   } = getContextValues("ModulesContext")
 
+  let routes = routeMap.map( routeData => getRoute(routeData))
 
-  let routes = modulesAvailable.map( moduleData => {
+  const more = modulesAvailable.map( moduleData => {
     const { route } = moduleData // path, label
 
     return (
@@ -37,6 +59,7 @@ export const Routing = (props) => {
       />
     )
   })
+  routes = [...routes, ...more]
 
   // <<< HACK
   // The NotAvailable component will be shown momentarily if the
@@ -59,15 +82,7 @@ export const Routing = (props) => {
   // an item from window.history, and it's better to show a message
   // than an inexplicably empty page.
 
-  routes.push(
-    <Route
-      key="home"
-      path="*"
-      element={
-        <NotAvailable/>
-      }
-    />
-  )
+  routes.push(getRoute(notFound))
   // HACK >>>
 
 

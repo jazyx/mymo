@@ -1,0 +1,18 @@
+#home {
+  & a {
+    color: var(--light);
+    padding: 0.5em 1em;
+    border: 1px outset #888;
+    border-radius: 0.5em;
+    user-select: none;
+
+    &:hover {
+      color: #fff;
+
+      &:active {
+        border-style: inset;
+        background-color: #000;
+      }
+    }
+  }
+}

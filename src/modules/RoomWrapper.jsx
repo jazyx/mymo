@@ -26,7 +26,7 @@ export default function RoomWrapper(props) {
   const [ lazyModules, setLazyModules ] = useState({})
   const { sendMessage } = getContextValues("WSContext")
   const {
-    room_name,
+    roomName,
     user,
     roomMembers,
     scores,
@@ -92,7 +92,7 @@ export default function RoomWrapper(props) {
     const message = {
       subject: "MYMO.SET_COHOST",
       recipient_id: "MYMO",
-      room_name,
+      roomName,
       cohost_id
     }
     sendMessage(message)
