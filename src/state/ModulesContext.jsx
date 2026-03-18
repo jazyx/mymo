@@ -10,7 +10,7 @@
  *     }
  *   ]
  *
- * This is made avalailable to Nav and Routing as modulesAvailable,
+ * This is made available to Nav and Routing as modulesAvailable,
  * where it is used to create Links and to load a module
  * dynamically when requested.
  *
@@ -36,7 +36,7 @@
 
 import { createContext, useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-const MODULES_API = "./modules-available.json"
+// const MODULES_API = "./modules-available.json"
 
 
 export const ModulesContext = createContext()
@@ -125,15 +125,15 @@ export const ModulesProvider = ({ children }) => {
   }
 
 
-  const fetchModulesAvailable = () => {
-    fetch(MODULES_API)
-    .then(response => response.json())
-    .then(json => json.filter( item => !item.hidden ))
-    .then(json => setModulesAvailable(json))
-  }
+  // const fetchModulesAvailable = () => {
+  //   fetch(MODULES_API)
+  //   .then(response => response.json())
+  //   .then(json => json.filter( item => !item.hidden ))
+  //   .then(json => setModulesAvailable(json))
+  // }
 
 
-  useEffect(fetchModulesAvailable, [])
+  // useEffect(fetchModulesAvailable, [])
   useEffect(goBackToSafeRoute, [badLinks.length])
   useEffect(clearErrorBoundary, [location])
 

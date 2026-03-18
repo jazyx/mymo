@@ -17,8 +17,11 @@ import { getContextValues } from '../state'
 import { RouteWrapper } from './RouteWrapper'
 
 
-const getRoute = ({ route, component }) => {
-  const Component = components[component]
+const getRoute = ({ route, component, Component }) => {
+  if (!Component) {
+    Component = components[component]
+  }
+
   return <Route
     key={route}
     path={route}
@@ -32,9 +35,9 @@ const getRoute = ({ route, component }) => {
 export const Routing = () => {
   const [ routeMap, setRouteMap ] = useState(staticRoutes)
   const notFound = {
-    "label": "Not Available",
-    "route": "*",
-    "component": "NotAvailable"
+    label: "Not Available",
+    route: "*",
+    Component: NotAvailable
   }
 
   

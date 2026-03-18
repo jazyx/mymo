@@ -298,6 +298,7 @@ export const WSProvider = ({ children }) => {
   // INCOMING MESSAGES // INCOMING MESSAGES // INCOMING MESSAGES //
 
   const systemConnection = message => {
+    console.log("CONNECTION:", message.recipient_id)
     userRef.current = message.recipient_id
     setUserIdSet(true) // force re-render
 

@@ -54,20 +54,28 @@ export const RoomProvider = ({ children }) => {
   const setAvailable = activities => {
     availableRef.current = activities
   }
+  const activityRef = useRef({})
+  const setActivity = activity => {
+    activityRef.current = activity
+  }
 
-  const [ activity, setActivity ] = useState("")
+  const [ render, setRender ] = useState(0) 
   const [ scores, setScores ] = useState({})
 
 
   const refreshRoomMembers = useCallback(({ 
     members,
-    activities
+    activities,
+    activity
   }) => {
     if (activities) { // only sent after joinRoom
       setAvailable(activities)
-      console.log("activities:", activities)
+    }
+    if (activity) {
+      setActivity(activity)
     }
 
+    // setRoomMembers will re-render the component
     setRoomMembers(() => members)
     const user = userRef.current
 
@@ -87,16 +95,11 @@ export const RoomProvider = ({ children }) => {
   }, [])
 
 
-  const joinRoom = () => {
-    if (!userId) { return }
-
-    const message = {
-      recipient_id: "MYMO",
-      subject: "MYMO.JOIN_ROOM",
-      roomName
-    }
-    sendMessage(message)
-  }
+  const setRoomActivity = useCallback(({ activity }) => {
+    setActivity(activity)
+    setRender(current => current + 1) // force re-render
+    return true
+  }, [])
 
 
   const setMessageListeners = () => {
@@ -106,6 +109,10 @@ export const RoomProvider = ({ children }) => {
       {
         subject: "MYMO.ROOM_MEMBERS",
         callback: refreshRoomMembers
+      },
+      {
+        subject: "MYMO.SET_ROOM_ACTIVITY",
+        callback: setRoomActivity
       }
     ]
 
@@ -122,7 +129,19 @@ export const RoomProvider = ({ children }) => {
       setMessageListeners()
     }
 
-    return () => {}
+    return () => {} // TODO? close socket?
+  }
+
+
+  const joinRoom = () => {
+    if (!userId) { return }
+
+    const message = {
+      recipient_id: "MYMO",
+      subject: "MYMO.JOIN_ROOM",
+      roomName
+    }
+    sendMessage(message)
   }
 
 
@@ -140,9 +159,7 @@ export const RoomProvider = ({ children }) => {
         user: userRef.current,
         setUser,
         available: availableRef.current,
-        setAvailable,
-        // activity,
-        // setActivity,
+        activity: activityRef.current,
         scores,
         // setScores
       }}

@@ -29,7 +29,7 @@
  */
 
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { getContextValues, useInsertProviders } from '../state'
@@ -61,6 +61,7 @@ export default function Room() {
   const [ userName, setUserName ] = useState("")
   const [ key_phrase, setKey_phrase ] = useState("")
   const [ failMessage, setFailMessage ] = useState("")
+  const inputRef = useRef()
 
 
   const {
@@ -104,6 +105,8 @@ export default function Room() {
     setUserName(user_name)
     if (key_phrase) {
       logIn(user_name)
+    } else {
+      inputRef.current.focus()
     }
   }
 
@@ -125,6 +128,7 @@ export default function Room() {
 
   const logIn = (user_name) => {
     if (typeof user_name !== "string") {
+      // Call came from Log In button, not a click on a name
       user_name = userName
     }
 
@@ -214,6 +218,7 @@ export default function Room() {
         <span>Enter your key phrase:</span>
         <input
           type="text"
+          ref={inputRef}
           value={key_phrase}
           onKeyDown={checkForEnter}
           onChange={upateKeyPhrase}

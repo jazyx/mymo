@@ -12,6 +12,7 @@ import {
 import { getContextValues, useInsertProviders } from '../state'
 import { getLazyModule } from '../routes/RouteWrapper'
 import { MemberList } from '../components/MemberList'
+import { ActivityList } from '../components/ActivityList'
 import { throbber } from '../components/Throbber'
 import "../css/room.css"
 
@@ -37,11 +38,13 @@ export default function RoomWrapper(props) {
     roomName,
     user,
     available,
+    activity,
     scores,
     setScores,
   } = getContextValues("RoomContext")
 
   console.log("available:", available)
+  console.log("activity:", activity)
 
 
   const loadContexts = () => {
@@ -129,6 +132,7 @@ export default function RoomWrapper(props) {
       id="room-wrapper"
     >
       <MemberList {...memberListProps}/>
+      <ActivityList available={available}/>
       <Suspense fallback={throbber}>
         {Object.values(lazyModules)}
       </Suspense>
