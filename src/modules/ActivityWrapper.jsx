@@ -31,8 +31,7 @@ export default function RoomWrapper(props) {
   // RoomContext will only become accessible after useEffect
   // has run after the component is mounted.
   const [ error, setError ] = useState(0)
-  const { children=[] } = props
-  const [ lazyModules, setLazyModules ] = useState({})
+  const [ LazyModule, setLazyModule ] = useState(() => () => "")
   const { sendMessage } = getContextValues("WSContext")
   const {
     roomName,
@@ -42,9 +41,6 @@ export default function RoomWrapper(props) {
     scores,
     setScores,
   } = getContextValues("RoomContext")
-
-  console.log("available:", available)
-  console.log("activity:", activity)
 
 
   const loadContexts = () => {
@@ -67,31 +63,19 @@ export default function RoomWrapper(props) {
 
 
   const loadChildren = () => {
-    children.forEach(({ label, path }) => {
-      const Module = getLazyModule(path)
+    if (!activity?.children) { return }
 
-      if (Module) {
-        setLazyModules(current => {
-          if (!current[label]) {
-            current[label] = (
-              <Module
-                key={label}
-                label={label}
-                {...props}
-              />
-            )
-          }
+    const path = activity.children[0].path
+    const Module = getLazyModule(path)
 
-          return { ...current }
-        })
-      }
-
-    })
+    if (Module) {
+      setLazyModule(() => Module)  
+    }
   }
 
 
   useEffect(loadContexts, [])
-  useEffect(loadChildren, [children])
+  useEffect(loadChildren, [activity?.children])
 
 
   const classPicker = ({ role, online }) => {
@@ -127,14 +111,17 @@ export default function RoomWrapper(props) {
   }
 
 
+  const showControls = user?.role !== "student" || typeof LazyModule === "function"
+
+
   return (
     <div
       id="room-wrapper"
     >
       <MemberList {...memberListProps}/>
-      <ActivityList available={available}/>
+      { showControls && <ActivityList available={available} /> }
       <Suspense fallback={throbber}>
-        {Object.values(lazyModules)}
+        <LazyModule />
       </Suspense>
     </div>
   )
