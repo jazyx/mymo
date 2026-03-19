@@ -34,8 +34,8 @@
 
     &:disabled {
       background-color: #999;
+      border: 2px solid #999;    }
     }
-  }
 
   .wrong {
     font-weight: normal;

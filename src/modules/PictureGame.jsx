@@ -3,6 +3,7 @@
  */
 
 
+import { useState, useEffect } from 'react'
 import "../css/shared.css"
 import "../css/picture-game.css"
 
@@ -17,20 +18,35 @@ export default function PictureGame({
     word,
     choices,
     found,
-    played = {},
-    score
+    played = {}
   } = state
+  const [ clicked, setClicked ] = useState([])
+
+
+  const reset = () => {
+    setClicked(() => [])
+  }
+
 
 
   const submitAnswer = (choice) => {
-    dispatch({
-      type: "CHECK_ANSWER",
-      payload: {
-        choice,
-        player,
-      }
-    })
+    const chosen = !played[player]
 
+    if (chosen) {
+      // Send the first answer to the backend
+      dispatch({
+        type: "CHECK_ANSWER",
+        payload: {
+          choice,
+          player,
+        }
+      })
+    }
+
+    // Remember that this word has already been clicked
+    if (clicked.indexOf(choice) < 0) {
+      setClicked(current => [...current, choice])
+    }
   }
 
 
@@ -41,23 +57,32 @@ export default function PictureGame({
   }
 
 
+  useEffect(reset, [word])
+
+
   const images = choices
     .filter( choice => !!choice )
     .map(choice => {
     const className = (played[player] === choice) // user chose...
-      ? (played[player] === word) // ... the right word?
+      ? (played[player] === word) //           ... the right word?
         ? "right"
         : "wrong"
-      : null
+      : (clicked.indexOf(choice) < 0) // user did not click this...
+        ? null
+        : (choice === word)   // ... but found the right answer
+          ? "found"
+          : "wrong"
 
     return (
-      <img
-        key={choice}
-        className={className}
-        src={`images/${choice}.webp`}
-        alt={choice}
-        onClick={() => submitAnswer(choice)}
-      />
+      <div className="frame">
+        <img
+          key={choice}
+          className={className}
+          src={`images/${choice}.webp`}
+          alt={choice}
+          onClick={() => submitAnswer(choice)}
+        />
+      </div>
     )
   })
 

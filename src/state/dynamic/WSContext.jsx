@@ -298,7 +298,6 @@ export const WSProvider = ({ children }) => {
   // INCOMING MESSAGES // INCOMING MESSAGES // INCOMING MESSAGES //
 
   const systemConnection = message => {
-    console.log("CONNECTION:", message.recipient_id)
     userRef.current = message.recipient_id
     setUserIdSet(true) // force re-render
 
@@ -309,13 +308,6 @@ export const WSProvider = ({ children }) => {
   const systemLogin = message => {
     const { user_name } = message
     setUserName(user_name)
-
-    console.log("SYSTEM user_name:", user_name)
-
-    // dispatch({
-    //   type: "SET_USER_NAME",
-    //   payload: user_name
-    // })
   }
 
 

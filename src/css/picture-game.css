@@ -7,12 +7,29 @@
 
   background-color: #fff6ee;
 
-  & > div:has(.right) {
+  & > div:has(.right, .found) {
     pointer-events: none;
     cursor: default;
 
-    & img:not(.right) {
+    & img:not(.right, .found) {
       opacity: var(--dim);
+    }
+    }
+
+  div.frame {
+    display: inline;
+    position: relative;
+    height: fit-content;
+    width: fit-content;
+
+    &:has(.found)::after {
+      content: "✅";
+      position: absolute;
+      top: -1.85em;
+      left: 0;
+      /* transform: translate(-50%, 40%); */
+      font-size: 3em;
+      opacity: 0.75;
     }
   }
 
@@ -30,6 +47,11 @@
     &.wrong {
       opacity: var(--dim);
     }
+/* 
+    &.found {
+      border: 1px inset green;
+      border-radius: 2em;
+    } */
   }
 
   h2.prompt {

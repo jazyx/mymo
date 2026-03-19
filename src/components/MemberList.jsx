@@ -17,11 +17,12 @@ export function MemberList(props) {
     user,
     roomMembers = [],
     // setRoomMembers,
-    // activity,
+    activity,
     // setActivity,
-    scores,
+    // scores,
     // setScores,
   } = getContextValues("RoomContext")
+  const scores = activity?.state?.score || {}
 
 
   const byScoreAndName = (a, b) => {
@@ -56,7 +57,7 @@ export function MemberList(props) {
     .map( member => {
       const { _id, name } = member
       const className = classPicker(member)
-      const score = scores[_id] || 0
+      const score = scores[name] || 0
 
       return (
         <li
