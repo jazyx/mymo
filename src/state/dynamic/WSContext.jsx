@@ -66,11 +66,13 @@ import {
   useRef
 } from 'react'
 
+
+const WS = import.meta.env.VITE_WS
 const HOSTNAME = import.meta.env.VITE_HOSTNAME
 const PORT = import.meta.env.VITE_PORT
 
 // Determine the URL to use for WebSocket
-const SOCKET_URL = `ws://${HOSTNAME}:${PORT}` // no trailing slash
+const SOCKET_URL = `${WS}${HOSTNAME}${PORT}` // no trailing slash
 
 
 export const WSContext = createContext()

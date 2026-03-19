@@ -6,8 +6,8 @@
 import { createContext } from 'react'
 
 const ORIGIN = import.meta.env.VITE_ORIGIN
-const dev = /^localhost:517\d$/.test(window.location.host)
-const origin = dev ? ORIGIN : ""
+const dev = false // /^localhost:517\d$/.test(window.location.host)
+const origin = dev ? ORIGIN : "mymo.jazyx.com"
 
 
 export const APIContext = createContext()
