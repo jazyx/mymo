@@ -41,7 +41,6 @@ export const RoomProvider = ({ children }) => {
   } = getContextValues("WSContext")
   // HARD-CODED roomName // HARD-CODED roomName //
   const [ roomName, setRoomName ] = useState()
-  const [ scores, setScores ] = useState({})
   const [ roomMembers, setRoomMembers ] = useState([])
   // user|setUser and available|setAvailable are handled by
   // useRef() so that theny will never go out of scope.
@@ -180,7 +179,6 @@ export const RoomProvider = ({ children }) => {
         setUser,            // called by checkLogInResult() —"—
         available: availableRef.current, // [{name, path, script}]
         activity: activityRef.current, // { path, state }
-        scores, // { <player name>: <integer>, ...}
         dispatch
       }}
     >

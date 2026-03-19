@@ -107,6 +107,7 @@ export default function ActivityWrapper(props) {
     classPicker,
     disabled: !user || user.role === "student",
     onClick: setCohost,
+    state: (activity?.state || {}),
     showScore: true
   }
 

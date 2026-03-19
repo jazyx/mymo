@@ -20,12 +20,12 @@
     }
   }
 
-  &:has(.right) {
+  &:has(.right, .found) {
     & p {
       pointer-events: none;
       cursor: default;
 
-      & span:not(.right) {
+      & span:not(.right, .found) {
         color: #999;
         font-weight: normal;
       }

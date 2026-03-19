@@ -1,6 +1,7 @@
 /* Rules shared by all xxxx-game modules */
 [class$=-game] {
   --green: #090;
+  --force: #66f;
   --ratio: calc(2 / 3);
   --width: min(100vw, calc(100vh) * var(--ratio));
   --height: min(100vh, calc(100vw) / var(--ratio));
@@ -19,22 +20,36 @@
     text-align: center;
   }
 
-  button {
-    width: 98%;
+  div.buttons {
+    display: flex;
     margin: 0 1% 1%;
-    font-size: 1.25em;
-    padding: 0.25em 0;
-    border-radius: 0.5em;
-    color: #fff;
-    background-color: var(--green);
 
-    &:not(:disabled) {
-      cursor: pointer;
-    }
+    & button {
+      font-size: 1.25em;
+      padding: 0.25em 0;
+      border-radius: 0.5em;
+      color: #fff;
+      background-color: var(--green);
+      border-color: var(--green);
 
-    &:disabled {
-      background-color: #999;
-      border: 2px solid #999;    }
+
+      &.done {
+        flex-grow: 12;
+      }
+      &.force {
+        flex-grow: 1;
+        background-color: var(--force);
+        border-color: var(--force);
+      }
+
+      &:not(:disabled) {
+        cursor: pointer;
+      }
+
+      &:disabled {
+        background-color: #999;
+        border: 2px solid #999;    }
+      }
     }
 
   .wrong {

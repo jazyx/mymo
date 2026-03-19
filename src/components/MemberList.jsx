@@ -11,18 +11,18 @@ export function MemberList(props) {
     classPicker,
     disabled,
     onClick,
+    state = {},
     showScore
   } = props
   const {
     user,
     roomMembers = [],
-    // setRoomMembers,
     activity,
-    // setActivity,
-    // scores,
-    // setScores,
   } = getContextValues("RoomContext")
-  const scores = activity?.state?.score || {}
+
+  const scores = state.score || {}
+  const played = state.played || {}
+  const word   = state.word || ""
 
 
   const byScoreAndName = (a, b) => {
@@ -58,6 +58,22 @@ export function MemberList(props) {
       const { _id, name } = member
       const className = classPicker(member)
       const score = scores[name] || 0
+      const chosen = played[name];
+
+      const choice = (disabled)
+        ? ""
+        : <span
+            className={`choice${
+              chosen 
+                ? chosen !== word
+                  ? " wrong"
+                  : " right"
+                : ""
+            }`}
+          >
+            {chosen || ""}
+          </span>
+      
 
       return (
         <li
@@ -69,9 +85,15 @@ export function MemberList(props) {
           <span className="name">
             {name}
           </span>
-          { showScore && <span className="score">
-            {score}
-          </span>}
+          { showScore &&
+            <>
+              <span className="score">
+                {score}
+              </span>
+              
+              {choice}
+            </>
+          }
         </li>
       )
     }

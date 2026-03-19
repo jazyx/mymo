@@ -96,12 +96,21 @@ export default function PictureGame({
       <h2 className="prompt">{word}</h2>
 
       { showControls &&
-        <button
-          disabled={!found}
-          onClick={nextRound}
-        >
-          Next Image
-        </button>
+        <div className="buttons">
+          <button
+            className="done"
+            disabled={!found}
+            onClick={nextRound}
+          >
+            Next Image
+          </button>
+          <button
+            className="force"
+            onClick={nextRound}
+          >
+            ➤
+          </button>
+        </div>
       }
     </div>
   );

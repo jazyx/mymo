@@ -47,11 +47,6 @@
     &.wrong {
       opacity: var(--dim);
     }
-/* 
-    &.found {
-      border: 1px inset green;
-      border-radius: 2em;
-    } */
   }
 
   h2.prompt {

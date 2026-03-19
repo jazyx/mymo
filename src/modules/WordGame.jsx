@@ -3,47 +3,85 @@
  */
 
 
-// <<< These could be lazy-loaded
-import { useGameCore } from "./useGameCore"
-import { useFetchWords } from "./useFetchWords"
-// >>>
+import { useState, useEffect } from 'react'
 import "../css/shared.css"
 import "../css/word-game.css"
 
-const wordsAPI = 'words.json'
 
-
-export default function WordGame() {
-  const { words } = useFetchWords({ wordsAPI })
-  
+export default function WordGame({
+  showControls,
+  state={},
+  player,
+  dispatch
+}) {
   const {
     word,
     choices,
-    clicked,
     found,
-    startNewGame,
-    checkAnswer
-  } = useGameCore({ words })
+    played = {}
+  } = state
+  const [ clicked, setClicked ] = useState([])
+
+
+  const reset = () => {
+    setClicked(() => [])
+  }
+
+
+
+  const submitAnswer = (choice) => {
+    const chosen = !played[player]
+
+    if (chosen) {
+      // Send the first answer to the backend
+      dispatch({
+        type: "CHECK_ANSWER",
+        payload: {
+          choice,
+          player,
+        }
+      })
+    }
+
+    // Remember that this word has already been clicked
+    if (clicked.indexOf(choice) < 0) {
+      setClicked(current => [...current, choice])
+    }
+  }
+
+
+  const nextRound = () => {
+    dispatch({
+      type: "NEW_ROUND"
+    })
+  }
+
+
+  useEffect(reset, [word])
 
 
   const spans = choices
-    .filter( word => !!word )
-    .map(word => {
-    const className =
-      clicked.indexOf(word) < 0
+    .filter( choice => !!choice )
+    .map(choice => {
+
+    const className = (played[player] === choice) // user chose...
+      ? (played[player] === word) //           ... the right word?
+        ? "right"
+        : "wrong"
+      : (clicked.indexOf(choice) < 0) // user did not click this...
         ? null
-        : found === word
-          ? "right"
+        : (choice === word)   // ... but found the right answer
+          ? "found"
           : "wrong"
 
     return (
       <span
-        key={word}
-        data-key={word}
+        key={choice}
+        data-key={choice}
         className={className}
-        onClick={() => checkAnswer(word)}
+        onClick={() => submitAnswer(choice)}
       >
-        {word}
+        {choice}
       </span>
     )
   })
@@ -54,12 +92,23 @@ export default function WordGame() {
       <h2>Choose the Word</h2>
       <img src={`images/${word}.webp`} alt={word} />
       <p>{spans}</p>
-      <button
-        disabled={!found}
-        onClick={startNewGame}
-      >
-        Next Word
-      </button>
+      { showControls &&
+        <div className="buttons">
+          <button
+            className="done"
+            disabled={!found}
+            onClick={nextRound}
+          >
+            Next Image
+          </button>
+          <button
+            className="force"
+            onClick={nextRound}
+          >
+            ➤
+          </button>
+        </div>
+      }
     </div>
   )
 }
