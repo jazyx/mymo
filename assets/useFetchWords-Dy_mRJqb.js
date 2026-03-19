@@ -1,1 +1,0 @@
-import{r as e}from"./index-BXSILDOg.js";const f=({wordsAPI:r})=>{const[o,s]=e.useState([]),[c,n]=e.useState(),a=()=>{fetch(r).then(t=>t.json()).then(t=>s(t)).catch(t=>{console.log("error:",t),n(`JSON.parse() failed with "${r}"`)})};return e.useEffect(a,[]),{error:c,words:o}};export{f as useFetchWords};
