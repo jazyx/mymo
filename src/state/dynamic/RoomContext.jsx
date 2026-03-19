@@ -5,7 +5,6 @@
  *
  *   + Room members
  *   + Current activity
- *   + Member scores
  *
  * • Below WSContext in the Provider component tree.
  * • Calls WSContext's requestSocket as soon as this is available.
@@ -42,7 +41,7 @@ export const RoomProvider = ({ children }) => {
   } = getContextValues("WSContext")
   // HARD-CODED roomName // HARD-CODED roomName //
   const [ roomName, setRoomName ] = useState()
-
+  const [ scores, setScores ] = useState({})
   const [ roomMembers, setRoomMembers ] = useState([])
   // user|setUser and available|setAvailable are handled by
   // useRef() so that theny will never go out of scope.
@@ -60,7 +59,6 @@ export const RoomProvider = ({ children }) => {
   }
 
   const [ render, setRender ] = useState(0) 
-  const [ scores, setScores ] = useState({})
 
 
   const refreshRoomMembers = useCallback(({ 
@@ -102,6 +100,12 @@ export const RoomProvider = ({ children }) => {
   }, [])
 
 
+  const treatActivity = ({ activity }) => {
+    setActivity(activity) // { path, state }
+    setRender(current => current + 1)
+  }
+
+
   const setMessageListeners = () => {
     if (!treatMessageListener) { return }
 
@@ -113,6 +117,10 @@ export const RoomProvider = ({ children }) => {
       {
         subject: "MYMO.SET_ROOM_ACTIVITY",
         callback: setRoomActivity
+      },
+      {
+        subject: "MYMO.ACTIVITY",
+        callback: treatActivity
       }
     ]
 
@@ -145,6 +153,18 @@ export const RoomProvider = ({ children }) => {
   }
 
 
+  const dispatch = ({ type, payload }) => {
+    const message = {
+      recipient_id: "MYMO",
+      subject: "MYMO.ACTIVITY",
+      roomName,
+      type,
+      payload,
+    }
+    sendMessage(message)
+  }
+
+
   useEffect(openSocket, [requestSocket])
   useEffect(joinRoom, [userId])
 
@@ -152,16 +172,16 @@ export const RoomProvider = ({ children }) => {
   return (
     <RoomContext.Provider
       value ={{
-        roomName,
-        setRoomName,
-        roomMembers,
-        refreshRoomMembers,
-        user: userRef.current,
-        setUser,
-        available: availableRef.current,
-        activity: activityRef.current,
-        scores,
-        // setScores
+        roomName,    // string
+        setRoomName, // called by defineRoomName() in Room.jsx
+        roomMembers, // [{ _id, name, role, online }, ...]
+        refreshRoomMembers, // called by checkLogInResult() —"—
+        user: userRef.current, // { _id, name, role, online }
+        setUser,            // called by checkLogInResult() —"—
+        available: availableRef.current, // [{name, path, script}]
+        activity: activityRef.current, // { path, state }
+        scores, // { <player name>: <integer>, ...}
+        dispatch
       }}
     >
       {children}

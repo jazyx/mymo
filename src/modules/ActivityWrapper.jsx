@@ -1,5 +1,5 @@
 /**
- * frontend/src/modules/RoomWrapper.jsx
+ * frontend/src/modules/ActivityWrapper.jsx
  */
 
 
@@ -23,7 +23,7 @@ const CONTEXTS = [
 ]
 
 
-export default function RoomWrapper(props) {
+export default function ActivityWrapper(props) {
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -38,6 +38,7 @@ export default function RoomWrapper(props) {
     user,
     available,
     activity,
+    dispatch,
     scores,
     setScores,
   } = getContextValues("RoomContext")
@@ -63,19 +64,18 @@ export default function RoomWrapper(props) {
 
 
   const loadChildren = () => {
-    if (!activity?.children) { return }
+    if (!activity?.path) { return }
 
-    const path = activity.children[0].path
-    const Module = getLazyModule(path)
+    const Module = getLazyModule(activity.path)
 
     if (Module) {
-      setLazyModule(() => Module)  
+      setLazyModule(() => Module)
     }
   }
 
 
   useEffect(loadContexts, [])
-  useEffect(loadChildren, [activity?.children])
+  useEffect(loadChildren, [activity?.path])
 
 
   const classPicker = ({ role, online }) => {
@@ -114,6 +114,14 @@ export default function RoomWrapper(props) {
   const showControls = user?.role !== "student" || typeof LazyModule === "function"
 
 
+  const moduleProps = {
+    player: user?.name,
+    showControls,
+    state: activity?.state,
+    dispatch
+  }
+
+
   return (
     <div
       id="room-wrapper"
@@ -121,7 +129,7 @@ export default function RoomWrapper(props) {
       <MemberList {...memberListProps}/>
       { showControls && <ActivityList available={available} /> }
       <Suspense fallback={throbber}>
-        <LazyModule />
+        <LazyModule {...moduleProps}/>
       </Suspense>
     </div>
   )

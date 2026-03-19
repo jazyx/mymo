@@ -13,6 +13,7 @@ export function ActivityList({ available=[] }) {
 
   const adoptActivity = ({ target }) => {
     const activity = JSON.parse(target.dataset.activity)
+    // { path: "./modules/GameName.jsx", label: "Game Name" }
 
     const message = {
       subject: "MYMO.SET_ROOM_ACTIVITY",
@@ -25,8 +26,9 @@ export function ActivityList({ available=[] }) {
 
 
   const activityList = available.map( activity => (
+    // { _id, name, path, script }
     <button
-      key={activity.route}
+      key={activity.path}
       disabled={user.role === "student"}
       onClick={adoptActivity}
       data-activity={JSON.stringify(activity)}

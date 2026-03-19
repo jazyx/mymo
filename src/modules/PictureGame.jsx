@@ -3,53 +3,64 @@
  */
 
 
-// <<< These could be lazy-loaded
-import { useGameCore } from "./useGameCore"
-import { useFetchWords } from "./useFetchWords"
-// >>>
 import "../css/shared.css"
 import "../css/picture-game.css"
 
-const wordsAPI = 'words.json'
 
-
-export default function PictureGame(props) {
-  const { error, words } = useFetchWords({ wordsAPI })
+export default function PictureGame({
+  showControls,
+  state={},
+  player,
+  dispatch
+}) {
   const {
     word,
     choices,
-    clicked,
     found,
-    startNewGame,
-    checkAnswer
-  } = useGameCore({ words })
+    played = {},
+    score
+  } = state
+
+
+  const submitAnswer = (choice) => {
+    dispatch({
+      type: "CHECK_ANSWER",
+      payload: {
+        choice,
+        player,
+      }
+    })
+
+  }
+
+
+  const nextRound = () => {
+    dispatch({
+      type: "NEW_ROUND"
+    })
+  }
 
 
   const images = choices
-    .filter( word => !!word )
-    .map(word => {
-    const className = (clicked.indexOf(word) < 0)
-      ? null
-      : (found === word)
+    .filter( choice => !!choice )
+    .map(choice => {
+    const className = (played[player] === choice) // user chose...
+      ? (played[player] === word) // ... the right word?
         ? "right"
         : "wrong"
+      : null
 
     return (
       <img
-        key={word}
+        key={choice}
         className={className}
-        src={`images/${word}.webp`}
-        alt={word}
-        onClick={() => checkAnswer(word)}
+        src={`images/${choice}.webp`}
+        alt={choice}
+        onClick={() => submitAnswer(choice)}
       />
     )
   })
 
-
-  if (error) {
-    throw new Error(error)
-  }
-    
 
   return (
     <div className="picture-game">
@@ -58,12 +69,15 @@ export default function PictureGame(props) {
         {images}
       </div>
       <h2 className="prompt">{word}</h2>
-      <button
-        disabled={!found}
-        onClick={startNewGame}
-      >
-        Next Image
-      </button>
+
+      { showControls &&
+        <button
+          disabled={!found}
+          onClick={nextRound}
+        >
+          Next Image
+        </button>
+      }
     </div>
   );
 }

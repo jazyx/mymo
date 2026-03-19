@@ -25,6 +25,8 @@
     font-size: 1.25em;
     padding: 0.25em 0;
     border-radius: 0.5em;
+    color: #fff;
+    background-color: var(--green);
 
     &:not(:disabled) {
       cursor: pointer;
@@ -48,12 +50,5 @@
     color: #fff;
     background-color: var(--green);
     cursor: pointer;
-  }
-
-  &:has(.right) {
-    & button {
-      color: #fff;
-      background-color: var(--green);
-    }
   }
 }
