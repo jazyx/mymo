@@ -21,8 +21,14 @@ p.fail {
   font-weight: bold;
 }
 
-#room-wrapper {
+#activity-wrapper {
   font-weight: bold;
+
+  & ol {
+    /* text-align: left; */
+    width: fit-content;
+    margin: 0 auto;
+  }
 
   & li.teacher {
     color: #0c0;
@@ -38,14 +44,20 @@ p.fail {
 
   & li span {
     display: inline-block;
-    width: 4em;
 
     &.name {
       text-align: left;
+      width: 5em;
     }
 
     &.score {
       text-align: right;
+      width: 2em;
+    }
+
+    &.choice {
+      width: 8em;
+      text-align: center;
     }
   }
 }

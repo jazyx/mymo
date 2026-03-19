@@ -125,7 +125,7 @@ export default function ActivityWrapper(props) {
 
   return (
     <div
-      id="room-wrapper"
+      id="activity-wrapper"
     >
       <MemberList {...memberListProps}/>
       { showControls && <ActivityList available={available} /> }

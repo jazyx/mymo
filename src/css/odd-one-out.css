@@ -1,0 +1,44 @@
+
+/* Rules specific to the picture-game module */
+.odd-one-out-game,
+.category-game {
+  --span-size: calc(var(--unit) * 10);
+  background-color: #eef;
+
+  & div.choices {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    justify-content: space-around;
+    align-items: center;
+
+    & span {
+      width: 80%;
+      font-size: 2em;
+      padding: 0.25em;
+      margin: 0.25em;
+      text-align: center;
+      font-weight: bold;
+      border: 1px outset #888;
+      border-radius: 0.5em;
+      cursor: pointer;
+
+      &.found {
+        color: #090;
+      }
+    }
+
+    &:has(.right, .found) {
+      & span {
+        pointer-events: none;
+        cursor: default;
+
+        &:not(.right, .found) {
+          color: #999;
+          font-weight: normal;
+        }
+      }
+    }
+  }
+}
