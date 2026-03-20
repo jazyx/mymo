@@ -1,0 +1,33 @@
+#ui {
+  width: fit-content;
+  /* background-color: red; */
+
+  & label {
+    display: flex;
+    justify-content: center;
+    text-align: right;
+    /* background-color: #900; */
+
+    & span {
+      display: inline-block;
+      width: 7em;
+      margin-right: 0.5em;
+
+      &::after {
+        content: ":";
+      }
+    }
+  }
+
+  & input,
+  & select {
+    width: 16em;
+    flex-grow: 0;
+    padding: 2px;
+    box-sizing: border-box;
+  }
+
+  & button {
+    width: 100%;
+  }
+}

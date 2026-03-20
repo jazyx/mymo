@@ -7,7 +7,7 @@
 
 
 import { useState, useEffect } from 'react'
-import { getContextValues, useInsertProviders } from '../state'
+import { getContextValues, useInsertProviders } from '../src/state'
 import "../css/counter.css"
 
 

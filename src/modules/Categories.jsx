@@ -1,12 +1,5 @@
 /**
- * games/CategoryGame.jsx
- *
- * This game uses:
- * + Its own word lists
- * + Its own technique for choosing a target word and decoys
- * 
- * The rest of its features are handled by useGameCore,
- * apart from rendering the layout.
+ * frontend/src/modules/Categories.jsx
  */
 
 

@@ -27,6 +27,12 @@ export default function Home() {
   return (
     <div id="home">
       <Link
+        to="/login"
+        draggable="false"
+      >
+        Teacher Login
+      </Link>
+      <Link
         to="/room/Thursday"
         draggable="false"
       >

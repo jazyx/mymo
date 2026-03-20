@@ -8,5 +8,15 @@
     "label": "Activities",
     "route": "/room/:RoomName/Activities",
     "path": "./modules/ActivityWrapper.jsx"
+  },
+  {
+    "label": "Teacher Login",
+    "route": "/login",
+    "path": "./modules/TeacherLogin.jsx"
+  },
+  {
+    "label": "Teacher UI",
+    "route": "/teacher",
+    "path": "./modules/TeacherUI.jsx"
   }
 ]
