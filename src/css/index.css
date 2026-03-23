@@ -8,10 +8,25 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --dark:  #222;
   --light: #ddd;
-  --link:  #66f;
-  --over:  #55f;
+  --r: 34;
+  --g: 34;
+  --b: 34;
+  --a: 0.95;
+  --dark: rgb(var(--r), var(--g), var(--b));
+  --darkly: rgba(var(--r), var(--g), var(--b), var(--a));
+
+  --disabled: #999;
+  --disabled-bg: #666;
+
+  --primary: #060;
+  --primary-border: #393;
+  --primary-active: #030;
+  --gap: 0.5em;
+  --slot: 0.25em;
+
+  --qr-collapsed-width: 10vmin;
+  --qr-expanded-width: 80vmin;
 
   color-scheme: light dark;
 }
@@ -36,6 +51,115 @@ body {
   min-height: 100vh;
 
   text-align: center;
+}
+
+button,
+.button {
+  padding: var(--slot) var(--gap);
+
+  border: 1px outset #888;
+  border-radius: var(--slot);
+  background-color: inherit;
+  color: var(--light);
+  font-size: inherit;
+  font-family: inherit;
+  text-decoration: none;
+
+  /* don't allow text selection */
+  -webkit-user-select: none; /* Safari */
+  user-select: none;
+
+  pointer-events: all;
+}
+
+button:not(:disabled):hover,
+.button:not(:disabled):hover,
+a.here {
+  color: #fff;
+}
+
+button:not(:disabled):active:hover,
+.button:not(:disabled):active:hover,
+button.pressed,
+.button.pressed,
+a.here {
+  background-color: #000;
+  border-style: inset;
+}
+
+button:not(:disabled),
+.button {
+  cursor: pointer
+}
+
+button.primary,
+.button.primary {
+  background-color: var(--primary);
+  border-color: var(--primary-border);
+
+  &:active:hover {
+    background-color: var(--primary-active);
+  }
+}
+
+form:invalid button,
+button:disabled,
+.button:disabled {
+  color: var(--disabled);
+  background-color: var(--disabled-bg);
+  border-color: var(--disabled);
+  pointer-events: none;
+}
+
+.button.like {
+  border-style: solid!important;
+  /* pointer-events: none; */
+  cursor: default;
+  background-color: transparent!important;
+}
+
+/* QRCODE // QRCODE // QRCODE // QRCODE // QRCODE // QRCODE */
+
+.qrcode {
+  --size: 2em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.qrcode div {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-top: 1em;
+}
+
+.qrcode a {
+  display: inline-block;
+  color: var(--light);
+  width: calc(100% - var(--size));
+  overflow: auto;
+}
+
+.qrcode svg {
+  position: absolute;
+  right: 0;
+  width: var(--size);
+  height: var(--size);
+  padding: 0.333em;
+  box-sizing: border-box;
+  border: 1px outset var(--light);
+  border-radius: var(--slot);
+  color: var(--light);
+}
+
+.qrcode svg:hover {
+  background-color: #000;
+}
+
+.qrcode svg:active {
+  border-style: inset;
 }
 
 @media (prefers-color-scheme: light) {

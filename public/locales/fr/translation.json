@@ -1,0 +1,29 @@
+{
+  "__endonym__": "Français",
+  "error": {
+    "404": "404 Introuvable",
+    "": "Une erreur est survenue"
+  },
+  "cancel": "Annuler",
+  "yes": "Oui",
+  "no": "Non",
+  "login": {
+    "teacher-title": "Entrée enseignants",
+    "teacher": "Enseignant ",
+    "username": "Nom d'utilisateur ",
+    "password": "Mot de passe ",
+    "key_phrase": "Mot clef ",
+    "log_in": "Entrer",
+    "fail_password": "Mot de passe invalid. Ressayer.",
+    "fail_phrase": "Mot clef invalid. Ressayer",
+    "new_teacher": "Nouvel enseignant...",
+    "teacher_name": "Nom de l'enseignant ",
+    "create_teacher": "Créer un compte d'enseignant"
+  },
+  "teacher": {
+    "management": {
+      "classroom": "Gestion des classes",
+      "activities": "Activités"
+    }
+  }
+}

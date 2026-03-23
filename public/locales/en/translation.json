@@ -1,0 +1,29 @@
+{
+  "__endonym__": "English",
+  "error": {
+    "404": "404 Not Found",
+    "": "Something went wrong"
+  },
+  "cancel": "Cancel",
+  "yes": "Yes",
+  "no": "No",
+  "login": {
+    "teacher-title": "Teacher Login",
+    "teacher": "Teacher",
+    "username": "User name",
+    "password": "Password",
+    "key_phrase": "Key Phrase",
+    "log_in": "Log In",
+    "fail_password": "Password not valid. Try again.",
+    "fail_phrase": "Key phrase not valid. Try again.",
+    "new_teacher": "New Teacher...",
+    "teacher_name": "Teacher's Name",
+    "create_teacher": "Create New Teacher"
+  },
+  "teacher": {
+    "management": {
+      "classroom": "Classroom Management",
+      "activities": "Activities"
+    }
+  }
+}

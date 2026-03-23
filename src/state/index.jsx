@@ -11,6 +11,7 @@ import {
 } from 'react'
 import API from "./APIContext"
 // import Records from "./RecordsContext"
+import I18n from "./I18nContext"
 import Modules from "./ModulesContext"
 import moduleLoaders from '../moduleLoaders'
 
@@ -43,6 +44,7 @@ export const Provider = ({ children }) => {
   const [ providers, setProviders ] = useState(() => [
     API,
     // Records,
+    I18n,
     Modules
   ])
   const [ error, setError ] = useState(null)

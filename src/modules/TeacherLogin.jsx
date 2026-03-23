@@ -6,7 +6,10 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation, Trans } from 'react-i18next';
+
 import { getContextValues, useInsertProviders } from '../state'
+import Nav from '../components/Nav';
 import '../css/ui.css'
 
 
@@ -15,6 +18,7 @@ const CONTEXTS = ['./state/dynamic/TeacherContext.jsx']
 
 export default function TeacherLogin() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const insertProviders = useInsertProviders()
   const { origin } = getContextValues("APIContext")
   const { setNameAndId } = getContextValues("TeacherContext")
@@ -62,7 +66,7 @@ export default function TeacherLogin() {
       navigate(`/teacher`)
 
     } else {
-      setFailMessage(() => "Key phrase not valid. Try again.")
+      setFailMessage(() => t("login.fail_password"))
       setKey_phrase(() => "")
     }
   }
@@ -150,7 +154,7 @@ export default function TeacherLogin() {
       key="new-teacher"
       value="new-teacher"
     >
-      New Teacher...
+      {t("login.new_teacher")}
     </option>)
 
 
@@ -159,50 +163,58 @@ export default function TeacherLogin() {
     : !_id || !key_phrase
 
   const label = (createNew)
-    ? "Create New Teacher"
-    : "Log In"
+    ? t("login.create_teacher")
+    : t("login.log_in")
 
 
   return (
-    <form id="ui" action="">
-      <h1>Teacher Login</h1>
-      <label>
-        <span>User name</span>
-        <select
-          onChange={chooseTeacher}
-          value={_id}
-        >
-          {teacherList}
-        </select>
-      </label>
-      { createNew && 
+    <div
+      id="ui"
+    >
+      <Nav disabled={true}/>
+      <form action="">
+        <h1>{t("login.teacher-title")}</h1>
         <label>
-          <span>Teacher name</span>
+          <span>{t("login.teacher")}</span>
+          <select
+            onChange={chooseTeacher}
+            value={_id}
+          >
+            {teacherList}
+          </select>
+        </label>
+        { createNew && 
+          <label>
+            <span>{t("login.teacher_name")}</span>
+            <input
+              type="text"
+              ref={nameRef}
+              value={name}
+              onChange={updateName}
+            />
+          </label>
+        
+        }
+        <label>
+          <span>{t("login.password")}</span>
           <input
             type="text"
-            ref={nameRef}
-            value={name}
-            onChange={updateName}
+            value={key_phrase}
+            onChange={updateKey_phrase}
           />
         </label>
-      
-      }
-      <label>
-        <span>Password</span>
-        <input
-          type="text"
-          value={key_phrase}
-          onChange={updateKey_phrase}
-        />
-      </label>
-      <button
-        className="primary"
-        disabled={disabled}
-        onClick={loginOrCreateTeacher}
-      >
-        {label}
-      </button>
-      <p className="fail">{failMessage}</p>
-    </form>
+        <button
+          className="primary"
+          disabled={disabled}
+          onClick={loginOrCreateTeacher}
+        >
+          {label}
+        </button>
+        <p className="fail">{failMessage}</p>
+      </form>
+      <span
+        className="footer"
+      />
+    </div>
   )
 }

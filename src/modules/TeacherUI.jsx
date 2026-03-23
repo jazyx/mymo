@@ -5,7 +5,12 @@
 
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation, Trans } from 'react-i18next';
+
 import { useInsertProviders, getContextValues } from '../state'
+import ClassManagement from './ClassManagement'
+import ActivityManagement from './ActivityManagement'
+import Nav from '../components/Nav'
 
 
 const CONTEXTS = ['./state/dynamic/TeacherContext.jsx']
@@ -13,8 +18,11 @@ const CONTEXTS = ['./state/dynamic/TeacherContext.jsx']
 
 export default function TeacherUI(props) {
   const navigate = useNavigate()
+  const { t } = useTranslation()
+
   const insertProviders = useInsertProviders()
   const [ error, setError ] = useState(0)
+  const [ tab, setTab ] = useState(0)
   
   const { name, _id } = getContextValues("TeacherContext")
 
@@ -47,7 +55,10 @@ export default function TeacherUI(props) {
 
   return (
     <div id="ui">
-      <h1>{`UI for ${name} goes here`}</h1>
+      <Nav setTab={setTab}/>
+      <h1>{`UI for ${name}`}</h1>
+      {!tab && <ClassManagement />}
+      {!!tab && <ActivityManagement />}
     </div>
   )
 }

@@ -1,0 +1,14 @@
+{
+  "ru": {
+    "name": "Русский",
+    "flag": "/mymo/flags/ru.png"
+  },
+  "en": {
+    "name": "English",
+    "flag": "/mymo/flags/en-GB.png"
+  },
+  "fr": {
+    "name": "Français",
+    "flag": "/mymo/flags/fr-FR.png"
+  }
+}
