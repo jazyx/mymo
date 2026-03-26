@@ -17,4 +17,4 @@ export const throbber = (
 )
 
 
-export const Throbber = () => throbber
+export default () => throbber

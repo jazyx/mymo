@@ -24,6 +24,7 @@
     "management": {
       "classroom": "Gestion des classes",
       "activities": "Activités"
-    }
+    },
+    "new-class": "Créer une nouvelle class"
   }
 }

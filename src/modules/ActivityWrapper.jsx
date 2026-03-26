@@ -11,8 +11,10 @@ import {
 
 import { getContextValues, useInsertProviders } from '../state'
 import { getLazyModule } from '../routes/RouteWrapper'
-import { MemberList } from '../components/MemberList'
-import { ActivityList } from '../components/ActivityList'
+
+import MemberList from '../components/MemberList'
+import ActivityList from '../components/ActivityList'
+import Growler from '../components/Growler'
 import { throbber } from '../components/Throbber'
 import "../css/room.css"
 
@@ -41,6 +43,7 @@ export default function ActivityWrapper(props) {
     dispatch,
     scores,
     setScores,
+    growl
   } = getContextValues("RoomContext")
 
 
@@ -132,6 +135,7 @@ export default function ActivityWrapper(props) {
       <Suspense fallback={throbber}>
         <LazyModule {...moduleProps}/>
       </Suspense>
+      <Growler message={growl} />
     </div>
   )
 }

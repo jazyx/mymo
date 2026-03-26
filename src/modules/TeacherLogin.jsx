@@ -21,7 +21,7 @@ export default function TeacherLogin() {
   const { t } = useTranslation()
   const insertProviders = useInsertProviders()
   const { origin } = getContextValues("APIContext")
-  const { setNameAndId } = getContextValues("TeacherContext")
+  const { setUserData } = getContextValues("TeacherContext")
   const [ error, setError ] = useState(0)
   
   const [ teachers, setTeachers ] = useState([])
@@ -61,8 +61,9 @@ export default function TeacherLogin() {
 
 
   const treatLogin = authorized => {
-    if (authorized) { // { name, _id }
-      setNameAndId(authorized)
+    if (authorized) { // { _id, name, key_phrase }
+      // console.log("authorized:", authorized)
+      setUserData(authorized)
       navigate(`/teacher`)
 
     } else {
@@ -95,13 +96,18 @@ export default function TeacherLogin() {
     fetch(url, options)
       .then(response => response.json())
       .then(json => json.authorized) // { _id, name }
+      .then(authorized => ({...authorized, key_phrase}))
+      // .then(authorized => {
+      //   console.log("authorized", JSON.stringify(authorized, null, '  '));
+      //   return authorized
+      // })
       .then(treatLogin)
       .catch(error => console.error("LOG_IN -", error))
   }
 
 
   const getTeachers = () => {
-    if (!setNameAndId) { return }
+    if (!setUserData) { return }
 
     const url = `${origin}/getTeachers/`
 
@@ -132,7 +138,7 @@ export default function TeacherLogin() {
 
 
   useEffect(loadContexts, [])
-  useEffect(getTeachers, [setNameAndId])
+  useEffect(getTeachers, [setUserData])
   useEffect(focusOnTeacherName, [createNew])
 
 

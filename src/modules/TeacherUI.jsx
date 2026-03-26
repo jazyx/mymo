@@ -56,9 +56,9 @@ export default function TeacherUI(props) {
   return (
     <div id="ui">
       <Nav setTab={setTab}/>
-      <h1>{`UI for ${name}`}</h1>
       {!tab && <ClassManagement />}
       {!!tab && <ActivityManagement />}
+      <span />
     </div>
   )
 }

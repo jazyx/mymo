@@ -170,6 +170,12 @@ export const WSProvider = ({ children }) => {
     socketRef.current = null
 
     console.log("socketClosed:", socketClosed, { socketIsOpen, socketError, socketRequested })
+
+    const message = {
+      sender_id: "SYSTEM",
+      subject: "SOCKET_CLOSED",
+    }
+    treatIncoming(message)
   }
 
 
@@ -227,6 +233,18 @@ export const WSProvider = ({ children }) => {
           })
 
           if (treated) {
+            // const replacer = (key, value) => {
+            //   if (value && !!(value.has && value.add && value.delete)) {
+            //     value = Array.from(value)
+            //       .map(callback => callback?.name)
+            //   }
+
+            //   return value
+            // }
+
+            // console.log("\n\n", action, JSON.stringify(listenersRef.current, replacer, '  '));
+            
+
             return 0 // no error
 
           // Error treatment from here on...
@@ -299,7 +317,7 @@ export const WSProvider = ({ children }) => {
 
   // INCOMING MESSAGES // INCOMING MESSAGES // INCOMING MESSAGES //
 
-  const systemConnection = message => {
+  function systemConnection(message) {
     userRef.current = message.recipient_id
     setUserIdSet(true) // force re-render
 
@@ -307,7 +325,7 @@ export const WSProvider = ({ children }) => {
   }
 
 
-  const systemLogin = message => {
+  function systemLogin (message) {
     const { user_name } = message
     setUserName(user_name)
   }

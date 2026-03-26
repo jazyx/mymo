@@ -6,7 +6,7 @@
 import { getContextValues } from '../state'
 
 
-export function ActivityList({ available=[] }) {
+export default function ActivityList({ available=[] }) {
   const { user, roomName } = getContextValues("RoomContext")
   const { sendMessage } = getContextValues("WSContext")
 

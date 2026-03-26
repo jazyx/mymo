@@ -2,7 +2,7 @@
   {
     "label": "Room",
     "route": "/room/:RoomName",
-    "path": "./modules/Room.jsx"
+    "path": "./modules/RoomLogin.jsx"
   },
   {
     "label": "Activities",

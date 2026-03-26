@@ -16,22 +16,25 @@ export const TeacherContext = createContext()
 
 
 export const TeacherProvider = ({ children }) => {
-  const [ name, setName ] = useState("")
   const [ _id, set_id ] = useState("")
-  
-  
-  const setNameAndId = ({ name, _id }) => {
-    setName(name)
+  const [ name, setName ] = useState("")
+  const [ key_phrase, setKey_phrase ] = useState("")
+
+
+
+  const setUserData = ({ _id, name, key_phrase }) => {
     set_id(_id)
+    setName(name)
+    setKey_phrase(key_phrase) // for joinRoom() -> ejectUser()
   }
-  
 
   return (
     <TeacherContext.Provider
       value ={{
-        name,
         _id,
-        setNameAndId
+        name,
+        key_phrase,
+        setUserData
       }}
     >
       {children}

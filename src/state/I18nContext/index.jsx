@@ -37,7 +37,6 @@ import { getContextValues } from '../'
 
 const BASE = import.meta.env.BASE_URL
 const URL = `${BASE}locales/languages.json`
-console.log("URL:", URL)
 
 
 export const I18nContext = createContext({})
@@ -63,8 +62,6 @@ export const I18nProvider = ({ children }) => {
       if (error) {
         return setLanguages(error)
       }
-
-      console.log("I18n languages:", languages)
 
       // Remove disabled languages
       const entries = Object.entries(languages)

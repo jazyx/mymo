@@ -1,5 +1,5 @@
 /**
- * frontend/src/pages/Room.jsx
+ * frontend/src/pages/RoomLogin.jsx
  * 
  * This is an optional/dynamically-imported module. It will not be
  * required when setting up a school, class membership or
@@ -33,8 +33,9 @@ import { useState, useEffect, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { getContextValues, useInsertProviders } from '../state'
-import { Throbber } from '../components/Throbber'
-import { MemberList } from '../components/MemberList'
+import Throbber from '../components/Throbber'
+import MemberList from '../components/MemberList'
+import Growler from '../components/Growler'
 import "../css/room.css"
 
 
@@ -55,12 +56,12 @@ export default function Room() {
   const insertProviders = useInsertProviders()
   // WSContext and RoomContext will only become accessible after
   // useEffect has run after the component is mounted.
-  const [ error, setError ] = useState(0) // in Contexts fail
+  const [ error, setError ] = useState(0) // if Contexts fail
 
   // Choosing userName from member list; providing key_phrase
   const [ userName, setUserName ] = useState("")
   const [ key_phrase, setKey_phrase ] = useState("")
-  const [ failMessage, setFailMessage ] = useState("")
+  const [ growl, setGrowl ] = useState("")
   const inputRef = useRef()
 
 
@@ -82,10 +83,10 @@ export default function Room() {
    * Sent by Mymo login() only to the client logging in
    * @param {*} param0 
    */
-  const checkLogInResult = ({ error, user, members }) => {
+  function checkLogInResult({ error, user, members }) {
     if (error) { 
       setKey_phrase("") // Assume key_phrase was incorrect
-      setFailMessage("Key phrase not valid. Try again.")
+      setGrowl("Key phrase not valid. Try again.")
 
     } else { 
       // Log in was successful.
@@ -114,7 +115,7 @@ export default function Room() {
   const checkForEnter = event => {
     if (event.key === "Enter") {
       event.preventDefault()
-      if (userName || key_phrase) {
+      if (userName && key_phrase) {
         logIn()
       }
     }
@@ -131,6 +132,7 @@ export default function Room() {
       // Call came from Log In button, not a click on a name
       user_name = userName
     }
+    if (!user_name) { return }
 
     const message = {
       subject: "LOG_IN",
@@ -157,7 +159,7 @@ export default function Room() {
 
 
   const defineRoomName = () => {
-    if (!setRoomName) { return }
+    if (!setRoomName || RoomName === roomName) { return }
     setRoomName(RoomName) // from params()
   }
 
@@ -174,12 +176,14 @@ export default function Room() {
 
     treatMessageListener("add", listeners)
 
-    return () => treatMessageListener("delete", listeners)
+    return () => {
+      treatMessageListener("delete", listeners)
+    }
   }
 
 
   useEffect(loadContexts, [])
-  useEffect(defineRoomName, [setRoomName])
+  useEffect(defineRoomName, [RoomName, setRoomName])
   useEffect(setMessageListeners, [userId])
 
 
@@ -230,7 +234,7 @@ export default function Room() {
       >
         Log In
       </button>
-      <p className="fail">{failMessage}</p>
+      <Growler message={growl}/>
     </>
   )
 }

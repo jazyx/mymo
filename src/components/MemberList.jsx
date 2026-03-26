@@ -6,7 +6,7 @@ import { getContextValues } from '../state'
 
 
 
-export function MemberList(props) {
+export default function MemberList(props) {
   const {
     classPicker,
     disabled,

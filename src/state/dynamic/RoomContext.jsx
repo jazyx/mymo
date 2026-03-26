@@ -26,6 +26,7 @@ import {
   useEffect,
   useCallback
 } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { getContextValues } from '..'
 
 
@@ -33,17 +34,29 @@ export const RoomContext = createContext()
 
 
 export const RoomProvider = ({ children }) => {
+  const navigate = useNavigate()
   const {
     requestSocket,
     userId,
     treatMessageListener,
     sendMessage
   } = getContextValues("WSContext")
-  // HARD-CODED roomName // HARD-CODED roomName //
-  const [ roomName, setRoomName ] = useState()
   const [ roomMembers, setRoomMembers ] = useState([])
+
+  // State variable to force re-render after useRef value changed
+  const [ render, setRender ] = useState(0)
+  const [ growl, setGrowl ] = useState("")
+  
+
   // user|setUser and available|setAvailable are handled by
   // useRef() so that theny will never go out of scope.
+  const roomRef = useRef()
+  const setRoomName = roomName => {
+    roomRef.current = roomName
+    setRender(current => {
+      return current + 1
+    }) // force re-render
+  }
   const userRef = useRef()
   const setUser = user => {
     userRef.current = user // provided as user: userRef.current
@@ -57,14 +70,13 @@ export const RoomProvider = ({ children }) => {
     activityRef.current = activity
   }
 
-  const [ render, setRender ] = useState(0) 
 
-
-  const refreshRoomMembers = useCallback(({ 
+  const refreshRoomMembers = useCallback(
+    function refreshRoomMembers({
     members,
     activities,
     activity
-  }) => {
+  }) {
     if (activities) { // only sent after joinRoom
       setAvailable(activities)
     }
@@ -92,17 +104,31 @@ export const RoomProvider = ({ children }) => {
   }, [])
 
 
-  const setRoomActivity = useCallback(({ activity }) => {
+  const setRoomActivity = useCallback(
+    function setRoomActivity({ activity }) {
     setActivity(activity)
     setRender(current => current + 1) // force re-render
     return true
   }, [])
 
 
-  const treatActivity = ({ activity }) => {
+  const treatActivity = useCallback(
+    function treatActivity({ activity }) {
     setActivity(activity) // { path, state }
     setRender(current => current + 1)
-  }
+  }, [])
+  
+  
+  const showEjectionNotice = useCallback(
+    function showEjectionNotice({ reason }) {
+    setGrowl(`You are being disconnected ${reason || ""}`)
+  }, [])
+
+
+  const treatSocketClosed = useCallback(
+    function treatSocketClosed() {
+      navigate(`/`) // room/${roomRef.current}`)
+  }, [])
 
 
   const setMessageListeners = () => {
@@ -120,18 +146,27 @@ export const RoomProvider = ({ children }) => {
       {
         subject: "MYMO.ACTIVITY",
         callback: treatActivity
+      },
+      {
+        subject: "MYMO.EJECTION_NOTICE",
+        callback: showEjectionNotice
+      },
+      {
+        subject: "SOCKET_CLOSED",
+        callback: treatSocketClosed
       }
     ]
 
     treatMessageListener("add", listeners)
 
-    return () => treatMessageListener("delete", listeners)
+    return () => {
+      treatMessageListener("delete", listeners)
+    }
   }
 
 
   const openSocket = () => {
     if (requestSocket) {
-      // console.log("openSocket called")
       requestSocket()
       setMessageListeners()
     }
@@ -141,12 +176,32 @@ export const RoomProvider = ({ children }) => {
 
 
   const joinRoom = () => {
-    if (!userId) { return }
+    if (!roomRef.current || !userId) { return }
 
     const message = {
       recipient_id: "MYMO",
       subject: "MYMO.JOIN_ROOM",
-      roomName
+      roomName: roomRef.current
+    }
+    sendMessage(message)
+  }
+
+
+  const ejectUser = ({user_id, name, refreshRooms})=> {
+    if (!userId) { return } // has not joined __admin__ group
+
+    // Make sure that only teachers can eject other users
+    const user = userRef.current
+    if (user?.role !== "teacher") { return }
+    const { _id: teacher_id } = user
+
+    const message = {
+      recipient_id: "MYMO",
+      subject: "MYMO.EJECT_USER",
+      teacher_id,
+      user_id, // User._id of user to eject from all connections
+      name,
+      refreshRooms
     }
     sendMessage(message)
   }
@@ -156,7 +211,7 @@ export const RoomProvider = ({ children }) => {
     const message = {
       recipient_id: "MYMO",
       subject: "MYMO.ACTIVITY",
-      roomName,
+      roomName: roomRef.current,
       type,
       payload,
     }
@@ -165,21 +220,23 @@ export const RoomProvider = ({ children }) => {
 
 
   useEffect(openSocket, [requestSocket])
-  useEffect(joinRoom, [userId])
+  useEffect(joinRoom, [roomRef.current, userId])
 
 
   return (
     <RoomContext.Provider
       value ={{
-        roomName,    // string
+        roomName: roomRef.current, // string
         setRoomName, // called by defineRoomName() in Room.jsx
         roomMembers, // [{ _id, name, role, online }, ...]
         refreshRoomMembers, // called by checkLogInResult() —"—
         user: userRef.current, // { _id, name, role, online }
         setUser,            // called by checkLogInResult() —"—
+        ejectUser,
         available: availableRef.current, // [{name, path, script}]
         activity: activityRef.current, // { path, state }
-        dispatch
+        dispatch,
+        growl
       }}
     >
       {children}
